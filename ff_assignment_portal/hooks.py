@@ -214,3 +214,5 @@ app_license = "APGL 3.0"
 # auth_hooks = [
 #	"ff_assignment_portal.auth.validate"
 # ]
+
+website_route_rules = [{'from_route': '/assignments-portal/<path:app_path>', 'to_route': 'assignments-portal'},]
