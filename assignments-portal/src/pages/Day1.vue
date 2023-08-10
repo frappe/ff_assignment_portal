@@ -52,17 +52,12 @@
           <p class="text-sm text-gray-500">No submissions yet.</p>
         </div>
 
-        <div v-else>
+        <div class="sm:grid sm:grid-cols-2 gap-2" v-else>
           <div
             v-for="submission in assignmentSubmissions.data"
             :key="submission.name"
           >
-            <div class="border p-3 space-y-3 rounded-sm mb-2 shadow-sm">
-              <div v-if="submission.feedback">
-                <h3 class="font-medium text-gray-600 text-xs mb-1">Feedback</h3>
-                <div class="text-base" v-html="submission.feedback" />
-              </div>
-
+            <div class="border p-3 space-y-3 rounded-sm h-full shadow-sm">
               <div>
                 <h3 class="font-medium text-gray-600 text-xs mb-1">Result</h3>
                 <Badge
@@ -77,6 +72,12 @@
                   >{{ submission.status }}</Badge
                 >
               </div>
+
+              <div v-if="submission.feedback">
+                <h3 class="font-medium text-gray-600 text-xs mb-1">Feedback</h3>
+                <div class="text-base" v-html="submission.feedback" />
+              </div>
+
             </div>
           </div>
         </div>

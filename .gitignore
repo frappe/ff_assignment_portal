@@ -4,3 +4,5 @@
 *.swp
 tags
 node_modules
+ff_assignment_portal/public/assignments-portal/assets
+ff_assignment_portal/www/assignments-portal.html
