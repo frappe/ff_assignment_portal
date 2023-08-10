@@ -4,9 +4,9 @@
   "description": "Assignment Checker Portal",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "cd assignments-portal && yarn dev",
-    "build": "cd assignments-portal && yarn build"
+    "build": "cd assignments-portal && yarn build",
+    "postinstall": "cd assignments-portal && yarn install"
   },
   "keywords": [],
   "author": "",
