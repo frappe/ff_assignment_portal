@@ -77,7 +77,6 @@
                 <h3 class="font-medium text-gray-600 text-xs mb-1">Feedback</h3>
                 <div class="text-base" v-html="submission.feedback" />
               </div>
-
             </div>
           </div>
         </div>
@@ -139,7 +138,7 @@ const assignmentSubmissions = createListResource({
   doctype: 'FF Assignment Submission',
   fields: ['name', 'feedback', 'status', 'creation'],
   filters: {
-    user: sessionUser,
+    user: sessionUser(),
     day: '1',
   },
   orderBy: 'creation desc',
