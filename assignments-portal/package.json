@@ -9,6 +9,7 @@
     "copy-html-entry": "cp ../ff_assignment_portal/public/assignments-portal/index.html ../ff_assignment_portal/www/assignments-portal.html"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.0.18",
     "feather-icons": "^4.28.0",
     "frappe-ui": "^0.1.0-alpha.11",
     "vue": "^3.2.25",

@@ -1,0 +1,121 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:SUBMISSION-{MM}-{YYYY}-{#####}",
+ "creation": "2023-08-09 19:21:25.279297",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "user",
+  "day",
+  "submission",
+  "column_break_uxap",
+  "full_name",
+  "status",
+  "section_break_gutm",
+  "feedback"
+ ],
+ "fields": [
+  {
+   "fetch_from": "user.full_name",
+   "fieldname": "full_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Full Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_uxap",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "user",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "User",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "submission",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Submission",
+   "reqd": 1
+  },
+  {
+   "default": "Unchecked",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Unchecked\nCheck In Progress\nPassed\nFailed",
+   "reqd": 1,
+   "sort_options": 1
+  },
+  {
+   "depends_on": "eval:doc.status!=\"Unchecked\"",
+   "fieldname": "section_break_gutm",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "feedback",
+   "fieldtype": "HTML Editor",
+   "label": "Feedback"
+  },
+  {
+   "fieldname": "day",
+   "fieldtype": "Select",
+   "label": "Day",
+   "options": "1\n2\n3",
+   "reqd": 1,
+   "sort_options": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2023-08-09 19:40:48.330784",
+ "modified_by": "Administrator",
+ "module": "FF Assignment Portal",
+ "name": "FF Assignment Submission",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [
+  {
+   "color": "Gray",
+   "title": "Unchecked"
+  },
+  {
+   "color": "Green",
+   "title": "Passed"
+  },
+  {
+   "color": "Orange",
+   "title": "Check In Progress"
+  },
+  {
+   "color": "Red",
+   "title": "Failed"
+  }
+ ],
+ "track_changes": 1,
+ "track_seen": 1
+}

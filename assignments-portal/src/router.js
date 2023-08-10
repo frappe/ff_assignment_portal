@@ -6,17 +6,27 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/pages/Home.vue'),
+    redirect: '/day-1',
   },
   {
-    name: 'Login',
-    path: '/account/login',
-    component: () => import('@/pages/Login.vue'),
+    path: '/day-1',
+    name: 'Day1',
+    component: () => import('@/pages/Day1.vue'),
+  },
+  {
+    path: '/day-2',
+    name: 'Day2',
+    component: () => import('@/pages/Day2.vue'),
+  },
+  {
+    path: '/day-3',
+    name: 'Day3',
+    component: () => import('@/pages/Day3.vue'),
   },
 ]
 
 let router = createRouter({
-  history: createWebHistory('/frontend'),
+  history: createWebHistory('/assignments-portal'),
   routes,
 })
 
@@ -31,7 +41,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.name === 'Login' && isLoggedIn) {
     next({ name: 'Home' })
   } else if (to.name !== 'Login' && !isLoggedIn) {
-    next({ name: 'Login' })
+    window.location.href = '/login'
   } else {
     next()
   }
