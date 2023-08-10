@@ -102,6 +102,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  assignmentSummaryResource: {
+    type: Object,
+    required: true,
+  },
 })
 
 const selectedFileDoc = ref(null)
@@ -119,6 +123,7 @@ const submitAssignment = createResource({
   onSuccess() {
     selectedFileDoc.value = null
     assignmentSubmissions.reload()
+    props.assignmentSummaryResource.reload()
   },
 })
 
@@ -138,6 +143,6 @@ const assignmentSubmissions = createListResource({
   },
   orderBy: 'creation desc',
   auto: true,
-  realtime: true
+  realtime: true,
 })
 </script>

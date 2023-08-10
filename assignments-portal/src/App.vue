@@ -87,7 +87,7 @@
   </nav>
 
   <div class="m-3" v-if="assignmentSummary.data">
-    <router-view :assignmentSummary="assignmentSummary.data" />
+    <router-view :assignmentSummary="assignmentSummary.data" :assignmentSummaryResource="assignmentSummary" />
   </div>
 </template>
 
