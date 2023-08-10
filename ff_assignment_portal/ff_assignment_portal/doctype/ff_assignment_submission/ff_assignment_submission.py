@@ -138,7 +138,7 @@ class SubmissionDocTypeJSON:
 
 		if num != expected_num_fields:
 			self.problems.append(
-				f"{self.doctype_meta['name']} DocType must contain {expected_num_fields} fields, but found {num}"
+				f"{self.doctype_meta['name']} DocType must contain {frappe.bold(expected_num_fields)} fields, but found {num}"
 			)
 
 	def validate_num_mandatory(self, expected_num_mandatory):
@@ -196,7 +196,7 @@ class SubmissionDocTypeJSON:
 	def validate_doctype_flags(self):
 		for flag, summary in self.checked_doctype_flags:
 			if not self.doctype_meta.get(flag, 0) == 1:
-				self.problems.append(f"{self.doctype} DocType must be {summary}.")
+				self.problems.append(f"{self.doctype} DocType must be {frappe.bold(summary)}.")
 
 	def validate_document_states(self):
 		states = self.doctype_meta.get("states", [])
