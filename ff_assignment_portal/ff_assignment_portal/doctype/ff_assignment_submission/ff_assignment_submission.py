@@ -32,7 +32,7 @@ doctype_check_parameters_map = {
 			("track_changes", "Tracking Changes"),
 		),
 		"num_document_states": 3,
-		"fetched_fields": {"Airplane": 2},
+		"num_fetched_fields": 2,
 	},
 }
 
@@ -104,7 +104,7 @@ class SubmissionDocTypeJSON:
 		expected_connection_doctypes=None,
 		checked_doctype_flags=None,
 		num_document_states=None,
-		fetched_fields=None,
+		num_fetched_fields=None,
 	):
 		self.filename = filename
 		self.doctype_meta = doctype_meta
@@ -120,7 +120,7 @@ class SubmissionDocTypeJSON:
 		self.expected_connection_doctypes = expected_connection_doctypes
 		self.checked_doctype_flags = checked_doctype_flags
 		self.num_document_states = num_document_states
-		self.fetched_fields = fetched_fields
+		self.num_fetched_fields = num_fetched_fields
 
 	def validate_num_fields(self, expected_num_fields):
 		fields = self.doctype_meta["fields"]
@@ -208,16 +208,15 @@ class SubmissionDocTypeJSON:
 	def validate_fetched_fields(self):
 		fields = self.doctype_meta["fields"]
 
-		for doctype, num_fields in self.fetched_fields.items():
-			fetched_fields_count = 0
-			for field in fields:
-				if field.get("fetch_from", "") == doctype:
-					fetched_fields_count = fetched_fields_count + 1
+		fetched_fields_count = 0
+		for field in fields:
+			if field.get("fetch_from"):
+				fetched_fields_count = fetched_fields_count + 1
 
-			if fetched_fields_count != num_fields:
-				self.problems.append(
-					f"Exactly {num_fields} fields must be fetched from {doctype} into {self.doctype} DocType."
-				)
+		if fetched_fields_count != self.num_fetched_fields:
+			self.problems.append(
+				f"Exactly {self.num_fetched_fields} fields must be fetched from some link into {self.doctype} DocType."
+			)
 
 	@property
 	def doctype(self):
@@ -247,7 +246,7 @@ class SubmissionDocTypeJSON:
 		if self.num_document_states:
 			self.validate_document_states()
 
-		if self.fetched_fields:
+		if self.num_fetched_fields:
 			self.validate_fetched_fields()
 
 		return self.problems
