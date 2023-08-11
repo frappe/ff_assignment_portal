@@ -1,6 +1,11 @@
 <template>
   <nav aria-label="Progress">
-    <Spinner v-if="assignmentSummary.loading" />
+    <div class="m-4" v-if="assignmentSummary.loading">
+      <div class="flex flex-row space-x-2">
+        <Spinner class="w-5 h-5" />
+        <span>Loading...</span>
+      </div>
+    </div>
 
     <ol
       v-else
