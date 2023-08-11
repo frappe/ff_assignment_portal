@@ -5,13 +5,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base=/assets/ff_assignment_portal/assignments-portal/ && yarn copy-html-entry",
-    "preview": "vite preview",
-    "copy-html-entry": "cp ../ff_assignment_portal/public/assignments-portal/index.html ../ff_assignment_portal/www/assignments-portal.html"
+    "copy-html-entry": "cp ../ff_assignment_portal/public/assignments-portal/index.html ../ff_assignment_portal/www/assignments-portal.html",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
     "feather-icons": "^4.28.0",
-    "frappe-ui": "^0.1.0-alpha.11",
+    "frappe-ui": "^0.1.0-alpha.13",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },

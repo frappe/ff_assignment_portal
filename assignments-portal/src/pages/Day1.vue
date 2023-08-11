@@ -13,11 +13,17 @@
           <FileUploader
             @error="handleUploadError"
             @success="handleUploadSuccess"
+            :upload-args="{
+              upload_endpoint:
+                '/api/method/ff_assignment_portal.api.upload_assignment_submission',
+            }"
           >
-            <template v-slot="{ uploading, openFileSelector }">
+            <template v-slot="{ uploading, openFileSelector, error }">
               <Button @click="openFileSelector" :loading="uploading"
                 >Attach Solution Zip</Button
               >
+
+              <ErrorMessage class="mt-2" :message="error" />
             </template>
           </FileUploader>
 

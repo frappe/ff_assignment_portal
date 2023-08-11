@@ -1,5 +1,8 @@
 import frappe
 
+from mimetypes import guess_type
+from frappe.utils import cint
+
 
 @frappe.whitelist()
 def get_assignments_summary():
@@ -22,3 +25,44 @@ def has_passed_assignment(day):
 			},
 		)
 	)
+
+
+@frappe.whitelist()
+def upload_assignment_submission():
+	"""Handles zip file upload for assignment submission"""
+	files = frappe.request.files
+	is_private = frappe.form_dict.is_private
+	doctype = frappe.form_dict.doctype
+	docname = frappe.form_dict.docname
+	fieldname = frappe.form_dict.fieldname
+	file_url = frappe.form_dict.file_url
+	folder = frappe.form_dict.folder or "Home"
+	filename = frappe.form_dict.file_name
+	content = None
+
+	if "file" in files:
+		file = files["file"]
+		content = file.stream.read()
+		filename = file.filename
+
+		content_type = guess_type(filename)[0]
+		# throw if not zip file
+		if content_type != "application/zip":
+			frappe.throw("Only zip files are allowed")
+
+	frappe.local.uploaded_file = content
+	frappe.local.uploaded_filename = filename
+
+	return frappe.get_doc(
+		{
+			"doctype": "File",
+			"attached_to_doctype": doctype,
+			"attached_to_name": docname,
+			"attached_to_field": fieldname,
+			"folder": folder,
+			"file_name": filename,
+			"file_url": file_url,
+			"is_private": cint(is_private),
+			"content": content,
+		}
+	).save(ignore_permissions=True)
