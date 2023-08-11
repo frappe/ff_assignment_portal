@@ -48,18 +48,19 @@ class FFAssignmentSubmission(Document):
 			return
 
 		all_problems = []  # to store all the problems
-		filename_with_contents = self.get_filename_with_contents()
+		filename_with_contents = list(self.get_filename_with_contents())
 
 		# number of files must be 4
-		num_files = len(list(filename_with_contents))
+		num_files = len(filename_with_contents)
 		if num_files != 4:
 			all_problems.append(
 				f"There must be exactly 4 files in the zip file, found {num_files}."
 			)
 
 		for filename, file_json in filename_with_contents:
+			doctype_name = guess_doctype_from_filename(filename)
 			submission_doctype_json = SubmissionDocTypeJSON(
-				filename, file_json, **doctype_check_parameters_map.get(filename, {})
+				filename, file_json, **doctype_check_parameters_map.get(doctype_name, {})
 			)
 			problems = submission_doctype_json.run_checks()
 			if problems:
@@ -67,7 +68,7 @@ class FFAssignmentSubmission(Document):
 
 		if all_problems:
 			self.status = "Failed"
-			self.feedback = "\n".join(all_problems)
+			self.feedback = "<br/>".join(all_problems)
 		else:
 			self.status = "Passed"
 			self.feedback = "All checks passed 🎉"
@@ -79,12 +80,10 @@ class FFAssignmentSubmission(Document):
 
 		with zipfile.ZipFile(file_doc.get_full_path()) as zip_file:
 			for file_name in zip_file.namelist():
-				print(file_name)
-
 				# ignore files that contain __MACOSX and .DS_Store
 				if "__MACOSX" in file_name or ".DS_Store" in file_name:
 					continue
-
+				
 				if file_name.endswith(".json"):
 					file_json = json.loads(zip_file.read(file_name).decode("utf-8"))
 					file_name = file_name.split("/")[-1]
@@ -178,7 +177,7 @@ class SubmissionDocTypeJSON:
 		if not self.doctype_meta.get("naming_rule") == naming_rule_type:
 			self.problems.append(f"{self.doctype} naming rule should be {naming_rule_type}")
 
-	def validate_connections(self, expected_num_connections, expected_connection_doctypes):
+	def validate_doctype_connections(self, expected_num_connections, expected_connection_doctypes):
 		links = self.doctype_meta.get("links", [])
 
 		if len(links) != expected_num_connections:
@@ -200,6 +199,7 @@ class SubmissionDocTypeJSON:
 
 	def validate_document_states(self):
 		states = self.doctype_meta.get("states", [])
+
 		if len(states) < self.num_document_states:
 			self.problems.append(
 				f"At least {self.num_document_states} Document States not defined in {self.doctype} doctype."
@@ -221,19 +221,7 @@ class SubmissionDocTypeJSON:
 
 	@property
 	def doctype(self):
-		if "passenger" in self.filename:
-			return "Flight Passenger"
-
-		if "airline" in self.filename:
-			return "Airline"
-
-		if "airplane_ticket" in self.filename:
-			return "Airplane Ticket"
-
-		if "airplane" in self.filename:
-			return "Airplane"
-
-		return None
+		return guess_doctype_from_filename(self.filename)
 
 	def run_checks(self):
 		if self.num_fields:
@@ -249,7 +237,7 @@ class SubmissionDocTypeJSON:
 			self.validate_naming_rule_type(self.naming_rule_type)
 
 		if self.validate_connections:
-			self.validate_connections(
+			self.validate_doctype_connections(
 				self.expected_num_connections, self.expected_connection_doctypes
 			)
 
@@ -276,3 +264,18 @@ def submit_assignment(day, file):
 	# If day 1, run the checks now
 	if day == "1":
 		submission_doc.run_checks()
+
+def guess_doctype_from_filename(filename):
+	if "passenger" in filename:
+		return "Flight Passenger"
+
+	if "airline" in filename:
+		return "Airline"
+
+	if "airplane_ticket" in filename:
+		return "Airplane Ticket"
+
+	if "airplane" in filename:
+		return "Airplane"
+
+	return None
