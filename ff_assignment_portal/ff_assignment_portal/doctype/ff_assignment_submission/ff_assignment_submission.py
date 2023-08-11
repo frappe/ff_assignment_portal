@@ -202,7 +202,7 @@ class SubmissionDocTypeJSON:
 
 		if len(states) < self.num_document_states:
 			self.problems.append(
-				f"At least {self.num_document_states} Document States not defined in {self.doctype} doctype."
+				f"At least {self.num_document_states} <strong>Document States</strong> must be defined for {self.doctype} doctype."
 			)
 
 	def validate_fetched_fields(self):
