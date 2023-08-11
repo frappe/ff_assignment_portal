@@ -56,6 +56,19 @@ class FFAssignmentSubmission(Document):
 			all_problems.append(
 				f"There must be exactly 4 files in the zip file, found {num_files}."
 			)
+		
+		# name of the files must be correct
+		expected_filenames = [
+			"airline.json",
+			"airplane.json",
+			"airplane_ticket.json",
+			"flight_passenger.json",
+		]
+		for filename, _ in filename_with_contents:
+			if filename not in expected_filenames:
+				all_problems.append(
+					f"Expected file name to be one of {expected_filenames}, but found {filename}."
+				)
 
 		for filename, file_json in filename_with_contents:
 			doctype_name = guess_doctype_from_filename(filename)
