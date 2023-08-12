@@ -45,6 +45,8 @@ class FFAssignmentSubmission(Document):
 	def run_checks(self):
 		if not self.day == "1":
 			# TODO: Implement checks for day 2 and 3
+			self.status = "Check In Progress"
+			self.save()
 			return
 
 		all_problems = []  # to store all the problems
@@ -273,9 +275,7 @@ def submit_assignment(day, file):
 	submission_doc.day = day
 	submission_doc.insert()
 
-	# If day 1, run the checks now
-	if day == "1":
-		submission_doc.run_checks()
+	submission_doc.run_checks()
 
 def guess_doctype_from_filename(filename):
 	if "passenger" in filename:
