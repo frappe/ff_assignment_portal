@@ -43,12 +43,16 @@ class FFAssignmentSubmission(Document):
 			frappe.throw("Please upload a zip file.")
 
 	def run_checks(self):
-		if not self.day == "1":
-			# TODO: Implement checks for day 2 and 3
-			self.status = "Check In Progress"
-			self.save()
-			return
+		if self.day == "1":
+			self.run_checks_for_day_1()
+		elif self.day == "2":
+			self.run_checks_for_day_2()
+		elif self.day == "3":
+			self.run_checks_for_day_3()
+		else:
+			frappe.throw("Unsupported day.")
 
+	def run_checks_for_day_1(self):
 		all_problems = []  # to store all the problems
 		filename_with_contents = list(self.get_filename_with_contents())
 
@@ -58,7 +62,7 @@ class FFAssignmentSubmission(Document):
 			all_problems.append(
 				f"There must be exactly 4 files in the zip file, found {num_files}."
 			)
-		
+
 		# name of the files must be correct
 		expected_filenames = [
 			"airline.json",
@@ -90,6 +94,16 @@ class FFAssignmentSubmission(Document):
 
 		self.save()
 
+	def run_checks_for_day_2(self):
+		self.mark_as_check_in_progress()
+
+	def run_checks_for_day_3(self):
+		self.mark_as_check_in_progress()
+
+	def mark_as_check_in_progress(self):
+		self.status = "Check In Progress"
+		self.save()
+
 	def get_filename_with_contents(self):
 		file_doc = frappe.get_doc("File", {"file_url": self.submission})
 
@@ -98,8 +112,8 @@ class FFAssignmentSubmission(Document):
 				# ignore files that contain __MACOSX and .DS_Store
 				if "__MACOSX" in file_name or ".DS_Store" in file_name:
 					continue
-				
-				if file_name.endswith(".json"):
+
+				if file_name.endswith((".json", ".py", ".html")):
 					file_json = json.loads(zip_file.read(file_name).decode("utf-8"))
 					file_name = file_name.split("/")[-1]
 					yield file_name, file_json
@@ -192,7 +206,9 @@ class SubmissionDocTypeJSON:
 		if not self.doctype_meta.get("naming_rule") == naming_rule_type:
 			self.problems.append(f"{self.doctype} naming rule should be {naming_rule_type}")
 
-	def validate_doctype_connections(self, expected_num_connections, expected_connection_doctypes):
+	def validate_doctype_connections(
+		self, expected_num_connections, expected_connection_doctypes
+	):
 		links = self.doctype_meta.get("links", [])
 
 		if len(links) != expected_num_connections:
@@ -276,6 +292,7 @@ def submit_assignment(day, file):
 	submission_doc.insert()
 
 	submission_doc.run_checks()
+
 
 def guess_doctype_from_filename(filename):
 	if "passenger" in filename:
