@@ -45,6 +45,14 @@ class FFAssignmentSubmission(Document):
 	def on_update(self):
 		if self.status == "Check In Progress" and self.day == "2" and self.feedback:
 			self.status = "Failed"
+			self.notify_student()
+
+	def notify_student(self):
+		frappe.sendmail(
+			recipients=self.user,
+			subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
+			message=self.feedback,
+		)
 
 	def run_checks(self):
 		if self.day == "1":
