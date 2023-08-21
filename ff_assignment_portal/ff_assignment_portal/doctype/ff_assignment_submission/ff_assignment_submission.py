@@ -173,6 +173,11 @@ class FFAssignmentSubmission(Document):
 				problems.append(
 					f"Web View must be enabled for {frappe.bold('Airplane Flight')} DocType."
 				)
+			
+			if airplane_flight_doctype.get("is_published_field") != "is_published":
+				problems.append(
+					f"Published field must be {frappe.bold('is_published')} for {frappe.bold('Airplane Flight')} DocType."
+				)
 
 		return problems
 
