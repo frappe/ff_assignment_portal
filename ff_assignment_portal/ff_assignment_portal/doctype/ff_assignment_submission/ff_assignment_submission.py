@@ -43,6 +43,11 @@ class FFAssignmentSubmission(Document):
 			frappe.throw("Please upload a zip file.")
 
 	def on_update(self):
+		if self.feedback and self.feedback.strip() == "All Checks Passed":
+			self.status = "Passed"
+			self.notify_student()
+			return
+
 		if self.status == "Check In Progress" and self.day == "2" and self.feedback:
 			self.status = "Failed"
 			self.notify_student()
@@ -167,9 +172,8 @@ class FFAssignmentSubmission(Document):
 			if notification_json.get("document_type") != "Airplane Flight":
 				problems.append("Notification must be for Airplane Flight DocType.")
 
-			
-			condition = notification_json.get("condition", "").replace(" ", "").replace("\"", "'")
-			
+			condition = notification_json.get("condition", "").replace(" ", "").replace('"', "'")
+
 			if "doc.status=='Scheduled'" not in condition:
 				problems.append(
 					f"Notification must be for {frappe.bold('Scheduled')} Airplane Flights only."
