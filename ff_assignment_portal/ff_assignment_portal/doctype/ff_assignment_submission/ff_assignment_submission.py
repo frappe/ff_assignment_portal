@@ -161,6 +161,19 @@ class FFAssignmentSubmission(Document):
 					f"Notification must be for {frappe.bold('Scheduled')} Airplane Flights only."
 				)
 
+		# Web View must be enabled for Airplane Flight DocType (i.e. has_web_view must be 1)
+		airplane_flight_doctype = None
+		for filename, file_json in self.get_filename_with_contents():
+			if filename.endswith("airplane_flight.json"):
+				airplane_flight_doctype = file_json
+				break
+
+		if airplane_flight_doctype:
+			if not airplane_flight_doctype.get("has_web_view"):
+				problems.append(
+					f"Web View must be enabled for {frappe.bold('Airplane Flight')} DocType."
+				)
+
 		return problems
 
 	def check_required_files(self, required_files_in_zip, problems):

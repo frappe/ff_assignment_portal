@@ -65,7 +65,12 @@
           >
             <div class="border p-3 space-y-3 rounded-sm h-full shadow-sm">
               <div>
-                <h3 class="font-medium text-gray-600 text-xs mb-1">Result</h3>
+                <h3
+                  v-if="submission.status != 'Check In Progress'"
+                  class="font-medium text-gray-600 text-xs mb-1"
+                >
+                  Result
+                </h3>
                 <Badge
                   variant="outline"
                   :theme="
@@ -79,6 +84,13 @@
                   "
                   >{{ submission.status }}</Badge
                 >
+
+                <h3
+                  v-if="submission.status == 'Check In Progress'"
+                  class="font-medium text-gray-600 text-xs mt-3"
+                >
+                  You will be notified when the check is complete.
+                </h3>
               </div>
 
               <div v-if="submission.feedback">
