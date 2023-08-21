@@ -42,16 +42,6 @@ class FFAssignmentSubmission(Document):
 		if not self.submission.endswith(".zip"):
 			frappe.throw("Please upload a zip file.")
 
-	def on_update(self):
-		if self.feedback and self.feedback.strip() == "All Checks Passed":
-			self.status = "Passed"
-			self.notify_student()
-			return
-
-		if self.status == "Check In Progress" and self.day == "2" and self.feedback:
-			self.status = "Failed"
-			self.notify_student()
-
 	def notify_student(self):
 		frappe.sendmail(
 			recipients=self.user,
