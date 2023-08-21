@@ -95,7 +95,91 @@ class FFAssignmentSubmission(Document):
 		self.save()
 
 	def run_checks_for_day_2(self):
+		problems = self.run_schema_checks_for_day_2()
+
+		if problems:
+			self.status = "Failed"
+			self.feedback = "<br/>".join(problems)
+			self.save()
+			return
+
 		self.mark_as_check_in_progress()
+		self.send_to_gh_actions_for_checking_day_2()
+
+	def send_to_gh_actions_for_checking_day_2(self):
+		pass
+
+	def run_schema_checks_for_day_2(self):
+		problems = []
+		required_files_in_zip = [
+			"airplane_flight.json",
+			"airplane_ticket.json",
+			"show-me.html",
+			"airplane_flight.html",
+			"airplane_flight_row.html",
+			"airplane_ticket.py",
+			"flight_passenger.py",
+			"airplane_flight.py",
+			"*web_form.json",
+			"*notification.json",
+		]
+
+		self.check_required_files(required_files_in_zip, problems)
+
+		# check the web form json
+		web_form_json = None
+		for filename, file_json in self.get_filename_with_contents():
+			if filename.endswith("web_form.json"):
+				web_form_json = file_json
+				break
+
+		# For the web form, we have to check these: "doc_type": "Airplane Ticket"
+		if web_form_json:
+			if web_form_json.get("doc_type") != "Airplane Ticket":
+				problems.append("Web Form must be for Airplane Ticket DocType.")
+
+		# Check the notification json
+		notification_json = None
+		for filename, file_json in self.get_filename_with_contents():
+			if filename.endswith("notification.json"):
+				notification_json = file_json
+				break
+
+		# For the Notification, we have to check "event": "Days Before", "days_in_advance": 1,
+		# "document_type": "Airplane Flight" and "condition": "doc.status==\"Scheduled\""
+		if notification_json:
+			if notification_json.get("event") != "Days Before":
+				problems.append("Notification must be for Days Before event.")
+			if notification_json.get("days_in_advance") != 1:
+				problems.append("Notification must be sent 1 day in advance.")
+			if notification_json.get("document_type") != "Airplane Flight":
+				problems.append("Notification must be for Airplane Flight DocType.")
+
+			notification_json["condition"] = notification_json["condition"].replace("\\", "")
+			if notification_json.get("condition") != 'doc.status=="Scheduled"':
+				problems.append(
+					f"Notification must be for {frappe.bold('Scheduled')} Airplane Flights only."
+				)
+
+		return problems
+
+	def check_required_files(self, required_files_in_zip, problems):
+		filename_with_contents = list(self.get_filename_with_contents())
+
+		# all the required file names must be present
+		for required_file in required_files_in_zip:
+			found = False
+			for filename, _ in filename_with_contents:
+				if required_file.startswith("*"):
+					if filename.endswith(required_file[1:]):
+						found = True
+						break
+				elif filename == required_file:
+					found = True
+					break
+
+			if not found:
+				problems.append(f"Required file `{frappe.bold(required_file)}` not found.")
 
 	def run_checks_for_day_3(self):
 		self.mark_as_check_in_progress()
@@ -114,7 +198,9 @@ class FFAssignmentSubmission(Document):
 					continue
 
 				if file_name.endswith((".json", ".py", ".html")):
-					file_json = json.loads(zip_file.read(file_name).decode("utf-8"))
+					file_json = zip_file.read(file_name).decode("utf-8")
+					if file_name.endswith(".json"):
+						file_json = json.loads(file_json)
 					file_name = file_name.split("/")[-1]
 					yield file_name, file_json
 
@@ -285,7 +371,7 @@ class SubmissionDocTypeJSON:
 
 @frappe.whitelist()
 def submit_assignment(day, file):
-	submission_doc = frappe.new_doc("FF Assignment Submission")
+	submission_doc: FFAssignmentSubmission = frappe.new_doc("FF Assignment Submission")
 	submission_doc.user = frappe.session.user
 	submission_doc.submission = file.get("file_url")
 	submission_doc.day = day
