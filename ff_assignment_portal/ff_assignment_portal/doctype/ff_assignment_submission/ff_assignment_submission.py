@@ -172,7 +172,7 @@ class FFAssignmentSubmission(Document):
 			if notification_json.get("document_type") != "Airplane Flight":
 				problems.append("Notification must be for Airplane Flight DocType.")
 
-			condition = notification_json.get("condition", "").replace(" ", "").replace('"', "'")
+			condition = notification_json.get("condition", "").replace(" ", "").replace('\"', "")
 
 			if "doc.status=='Scheduled'" not in condition:
 				problems.append(
