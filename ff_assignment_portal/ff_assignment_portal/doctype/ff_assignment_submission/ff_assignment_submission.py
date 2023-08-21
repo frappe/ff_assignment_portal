@@ -42,6 +42,10 @@ class FFAssignmentSubmission(Document):
 		if not self.submission.endswith(".zip"):
 			frappe.throw("Please upload a zip file.")
 
+	def on_update(self):
+		if self.status == "Check In Progress" and self.day == "2" and self.feedback:
+			self.status = "Failed"
+
 	def run_checks(self):
 		if self.day == "1":
 			self.run_checks_for_day_1()
