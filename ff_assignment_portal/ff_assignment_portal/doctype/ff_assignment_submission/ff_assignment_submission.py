@@ -155,7 +155,9 @@ class FFAssignmentSubmission(Document):
 			if notification_json.get("document_type") != "Airplane Flight":
 				problems.append("Notification must be for Airplane Flight DocType.")
 
-			notification_json["condition"] = notification_json["condition"].replace("\\", "")
+			notification_json["condition"] = notification_json.get("condition", "").replace(
+				"\\", ""
+			)
 			if notification_json.get("condition") != 'doc.status=="Scheduled"':
 				problems.append(
 					f"Notification must be for {frappe.bold('Scheduled')} Airplane Flights only."
@@ -173,7 +175,7 @@ class FFAssignmentSubmission(Document):
 				problems.append(
 					f"Web View must be enabled for {frappe.bold('Airplane Flight')} DocType."
 				)
-			
+
 			if airplane_flight_doctype.get("is_published_field") != "is_published":
 				problems.append(
 					f"Published field must be {frappe.bold('is_published')} for {frappe.bold('Airplane Flight')} DocType."
