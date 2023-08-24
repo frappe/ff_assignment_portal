@@ -46,6 +46,9 @@ class FFAssignmentSubmission(Document):
 		if self.has_value_changed("status"):
 			self.notify_student()
 
+	def before_insert(self):
+		self.run_checks()
+
 	def notify_student(self):
 		frappe.sendmail(
 			recipients=self.user,
@@ -103,21 +106,19 @@ class FFAssignmentSubmission(Document):
 			self.status = "Passed"
 			self.feedback = "All checks passed 🎉"
 
-		self.save()
-
 	def run_checks_for_day_2(self):
 		problems = self.run_schema_checks_for_day_2()
 
 		if problems:
 			self.status = "Failed"
 			self.feedback = "<br/>".join(problems)
-			self.save()
 			return
 
 		self.mark_as_check_in_progress()
 		self.send_to_gh_actions_for_checking_day_2()
 
 	def send_to_gh_actions_for_checking_day_2(self):
+		# NOTE: Happens in a webhook in frappe.school
 		pass
 
 	def run_schema_checks_for_day_2(self):
@@ -216,7 +217,6 @@ class FFAssignmentSubmission(Document):
 
 	def mark_as_check_in_progress(self):
 		self.status = "Check In Progress"
-		self.save()
 
 	def get_filename_with_contents(self):
 		file_doc = frappe.get_doc("File", {"file_url": self.submission})
@@ -406,8 +406,6 @@ def submit_assignment(day, file):
 	submission_doc.submission = file.get("file_url")
 	submission_doc.day = day
 	submission_doc.insert()
-
-	submission_doc.run_checks()
 
 
 def guess_doctype_from_filename(filename):
