@@ -230,7 +230,10 @@ class FFAssignmentSubmission(Document):
 				if file_name.endswith((".json", ".py", ".html")):
 					file_json = zip_file.read(file_name).decode("utf-8")
 					if file_name.endswith(".json"):
-						file_json = json.loads(file_json)
+						try:
+							file_json = json.loads(file_json)
+						except json.decoder.JSONDecodeError:
+							frappe.throw(f"There is a problem with your JSON file: {frappe.bold(file_name)}")
 					file_name = file_name.split("/")[-1]
 					yield file_name, file_json
 
