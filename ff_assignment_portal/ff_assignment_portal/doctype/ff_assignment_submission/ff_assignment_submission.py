@@ -227,7 +227,7 @@ class FFAssignmentSubmission(Document):
 				if "__MACOSX" in file_name or ".DS_Store" in file_name:
 					continue
 
-				if file_name.endswith((".json", ".py", ".html")):
+				if file_name.endswith((".json", ".py", ".html", ".js")):
 					file_json = zip_file.read(file_name).decode("utf-8")
 					if file_name.endswith(".json"):
 						try:
