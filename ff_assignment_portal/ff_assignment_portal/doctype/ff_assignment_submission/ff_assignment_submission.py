@@ -213,7 +213,54 @@ class FFAssignmentSubmission(Document):
 				problems.append(f"Required file `{frappe.bold(required_file)}` not found.")
 
 	def run_checks_for_day_3(self):
+		problems = self.run_schema_checks_for_day_3()
+
+		if problems:
+			self.status = "Failed"
+			self.feedback = "<br/>".join(problems)
+			return
+
 		self.mark_as_check_in_progress()
+
+	def run_schema_checks_for_day_3(self):
+		problems = []
+
+		required_files_in_zip = [
+			"airline.js",
+			"airplane_ticket.js",
+			"airplane_ticket.py",
+			"airplane_ticket.json",
+			"airplane.json",
+			"airport.json",
+			"airplanes_by_airline.json",
+			"revenue_by_airline.py",
+			"add_on_popularity.json",
+		]
+
+		self.check_required_files(required_files_in_zip, problems)
+
+		if problems:
+			return problems
+
+		file_name_with_contents = list(self.get_filename_with_contents())
+		js_files = {
+			file_name: content
+			for file_name, content in file_name_with_contents
+			if file_name.endswith(".js")
+		}
+
+		json_files = {
+			file_name: content
+			for file_name, content in file_name_with_contents
+			if file_name.endswith(".json")
+		}
+
+		check_client_scripts(js_files, problems)
+
+		# check if proper permissions are applied
+		check_permissions_for_day_3(json_files, problems)
+
+		return problems
 
 	def mark_as_check_in_progress(self):
 		self.status = "Check In Progress"
@@ -425,3 +472,84 @@ def guess_doctype_from_filename(filename):
 		return "Airplane"
 
 	return None
+
+
+def check_client_scripts(script_files_with_name, problems):
+	airplane_ticket_js = script_files_with_name.get("airplane_ticket.js", "")
+	airline_js = script_files_with_name.get("airline.js", "")
+
+	airplane_ticket_js = get_cleaned_up_content(airplane_ticket_js)
+	airline_js = get_cleaned_up_content(airline_js)
+
+	# airplane_ticket.js must contain frm.add_custom_button()
+	if "frm.add_custom_button" not in airplane_ticket_js:
+		problems.append(
+			f"`airplane_ticket.js` must add a custom button using {frappe.bold('frm.add_custom_button()')} function"
+		)
+
+	# airplane_ticket.js must contain new frappe.ui.Dialog()
+	if "newfrappe.ui.Dialog" not in airplane_ticket_js:
+		problems.append(
+			f"`airplane_ticket.js` must create a new dialog using {frappe.bold('new frappe.ui.Dialog()')}"
+		)
+
+	# airplane_ticket.js must contain frm.set_value()
+	if "frm.set_value" not in airplane_ticket_js:
+		problems.append(
+			f"`airplane_ticket.js` must set value of 'seat' using {frappe.bold('frm.set_value()')} function"
+		)
+
+	# airline.js must contain frm.add_web_link()
+	if "frm.add_web_link" not in airline_js:
+		problems.append(
+			f"`airline.js` must add a web link using {frappe.bold('frm.add_web_link()')} function"
+		)
+
+
+def get_cleaned_up_content(content_string):
+	# remove whitespace
+	content_string = content_string.replace(" ", "")
+	# remove newlines
+	content_string = content_string.replace("\n", "")
+	# remove trailing and leading spaces
+	content_string = content_string.strip()
+
+	return content_string
+
+
+def check_permissions_for_day_3(json_files, problems):
+	required_permissions_for_airplane_ticket = [
+		("Flight Crew Member", {"create", "read", "write"}),
+		("Travel Agent", {"create", "read", "write", "delete"}),
+		("Airport Authority Personnel", {"create", "read", "write", "delete"}),
+	]
+
+	# get airplane_ticket.json
+	airplane_ticket_json = json_files.get("airplane_ticket.json", {})
+	airplane_ticket_permissions = airplane_ticket_json.get("permissions", [])
+
+	# check if all the required permissions are present
+
+	permissions_by_role = frappe._dict()
+	for permission in airplane_ticket_permissions:
+		role = permission.get("role")
+		processed_permissions = set()
+		for key, value in permission.items():
+			if key in ("create", "read", "write", "delete") and value == 1:
+				processed_permissions.add(key)
+
+		permissions_by_role.setdefault(role, set()).update(processed_permissions)
+
+	for role, required_permissions in required_permissions_for_airplane_ticket:
+		if role not in permissions_by_role:
+			problems.append(
+				f"Role {frappe.bold(role)} must be added in permission rules of Airplane Ticket DocType."
+			)
+			continue
+
+		permissions = permissions_by_role[role]
+		if not required_permissions == permissions:
+			missing_permissions = required_permissions.difference(permissions)
+			problems.append(
+				f"Role {frappe.bold(role)} must have {frappe.bold(', '.join(missing_permissions))} permissions for Airplane Ticket DocType."
+			)
