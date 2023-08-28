@@ -92,7 +92,10 @@
   </nav>
 
   <div class="m-3" v-if="assignmentSummary.data">
-    <router-view :assignmentSummary="assignmentSummary.data" :assignmentSummaryResource="assignmentSummary" />
+    <router-view
+      :assignmentSummary="assignmentSummary.data"
+      :assignmentSummaryResource="assignmentSummary"
+    />
   </div>
 </template>
 
@@ -125,6 +128,7 @@ const steps = computed(() => {
     { id: '01', name: 'Day 1', href: '/day-1', status: status('day-1') },
     { id: '02', name: 'Day 2', href: '/day-2', status: status('day-2') },
     { id: '03', name: 'Day 3', href: '/day-3', status: status('day-3') },
+    { id: '04', name: 'Finals', href: '/day-4', status: status('day-4') },
   ]
 })
 </script>

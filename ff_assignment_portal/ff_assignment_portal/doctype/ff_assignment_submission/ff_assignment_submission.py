@@ -63,6 +63,8 @@ class FFAssignmentSubmission(Document):
 			self.run_checks_for_day_2()
 		elif self.day == "3":
 			self.run_checks_for_day_3()
+		elif self.day == "4":
+			self.mark_as_check_in_progress()
 		else:
 			frappe.throw("Unsupported day.")
 

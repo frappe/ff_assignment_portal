@@ -23,6 +23,11 @@ const routes = [
     name: 'Day3',
     component: () => import('@/pages/Day3.vue'),
   },
+  {
+    path: '/day-4',
+    name: 'Day4',
+    component: () => import('@/pages/Day4.vue'),
+  },
 ]
 
 let router = createRouter({
