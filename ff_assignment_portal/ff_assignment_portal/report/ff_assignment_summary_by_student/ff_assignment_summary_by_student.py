@@ -25,6 +25,7 @@ def get_data(filters=None):
 				"day_1": status_for_day(student.user, "1"),
 				"day_2": status_for_day(student.user, "2"),
 				"day_3": status_for_day(student.user, "3"),
+				"day_4": status_for_day(student.user, "4"),
 			}
 		)
 
@@ -32,7 +33,7 @@ def get_data(filters=None):
 		total_submitted = 0
 		total_passed = 0
 
-		for day in ("1", "2", "3"):
+		for day in ("1", "2", "3", "4"):
 			status = row[f"day_{day}"]
 			if has_passed(status):
 				total_passed = total_passed + 1
@@ -42,8 +43,8 @@ def get_data(filters=None):
 			if has_submitted(status):
 				total_submitted = total_submitted + 1
 
-		row["submitted_summary"] = f"{total_submitted} / 3"
-		row["passed_summary"] = f"{total_passed} / 3"
+		row["submitted_summary"] = f"{total_submitted} / 4"
+		row["passed_summary"] = f"{total_passed} / 4"
 
 	return data
 
@@ -73,11 +74,19 @@ def get_columns():
 			"fieldname": "day_2",
 			"label": "Day 2",
 			"fieldtype": "Data",
+			"width": 120,
 		},
 		{
 			"fieldname": "day_3",
 			"label": "Day 3",
 			"fieldtype": "Data",
+			"width": 120,
+		},
+		{
+			"fieldname": "day_4",
+			"label": "Day 4",
+			"fieldtype": "Data",
+			"width": 120,
 		},
 		{
 			"fieldname": "submitted_summary",
