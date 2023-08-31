@@ -490,9 +490,11 @@ def check_client_scripts(script_files_with_name, problems):
 		)
 
 	# airplane_ticket.js must contain new frappe.ui.Dialog()
-	if "newfrappe.ui.Dialog" not in airplane_ticket_js:
+	if ("newfrappe.ui.Dialog" not in airplane_ticket_js) and (
+		"frappe.prompt(" not in airplane_ticket_js
+	):
 		problems.append(
-			f"`airplane_ticket.js` must create a new dialog using {frappe.bold('new frappe.ui.Dialog()')}"
+			f"`airplane_ticket.js` must create a new dialog using {frappe.bold('new frappe.ui.Dialog()')} or {frappe.bold('frappe.prompt')}"
 		)
 
 	# airplane_ticket.js must contain frm.set_value()
