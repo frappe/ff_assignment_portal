@@ -46,7 +46,7 @@ router.beforeEach(async (to, from, next) => {
   if (to.name === 'Login' && isLoggedIn) {
     next({ name: 'Home' })
   } else if (to.name !== 'Login' && !isLoggedIn) {
-    window.location.href = '/login'
+    window.location.href = `/login?redirect-to=/assignments-portal${to.path}`
   } else {
     next()
   }
