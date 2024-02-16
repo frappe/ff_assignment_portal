@@ -7,6 +7,8 @@ import zipfile
 
 from frappe.model.document import Document
 
+ASSIGNMENT_DOCTYPE_NAME = "FF Assignment Submission"
+
 doctype_check_parameters_map = {
 	"Flight Passenger": {
 		"field_type_counts": {"Data": 2, "Date": 1},
@@ -42,12 +44,27 @@ class FFAssignmentSubmission(Document):
 		if not self.submission.endswith(".zip"):
 			frappe.throw("Please upload a zip file.")
 
+
 	def on_update(self):
 		if self.has_value_changed("status"):
-			self.notify_student()
+			# self.notify_student()
+			pass
 
 	def before_insert(self):
+		self.validate_previous_in_progress()
 		self.run_checks()
+	
+	def validate_previous_in_progress(self):
+		previous_in_progress = frappe.db.get_all(
+			ASSIGNMENT_DOCTYPE_NAME, 
+			filters={"status": "Check In Progress"},
+			pluck="name"
+		)
+
+		if previous_in_progress:
+			for name in previous_in_progress:
+				frappe.db.set_value(ASSIGNMENT_DOCTYPE_NAME, name, "status", "Stale")
+
 
 	def notify_student(self):
 		frappe.sendmail(

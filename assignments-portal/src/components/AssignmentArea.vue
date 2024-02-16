@@ -74,15 +74,7 @@
                 </h3>
                 <Badge
                   variant="outline"
-                  :theme="
-                    submission.status == 'Failed'
-                      ? 'red'
-                      : submission.status == 'Passed'
-                        ? 'green'
-                        : submission.status == 'Check In Progress'
-                          ? 'blue'
-                          : 'gray'
-                  "
+                  :theme="statusColorMap[submission.status] || 'gray'"
                   >{{ submission.status }}</Badge
                 >
 
@@ -132,6 +124,13 @@ const props = defineProps({
     required: true,
   },
 })
+
+const statusColorMap = {
+  Failed: 'red',
+  Passed: 'green',
+  'Check In Progress': 'blue',
+  Stale: 'gray',
+}
 
 const selectedFileDoc = ref(null)
 
