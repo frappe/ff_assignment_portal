@@ -11,7 +11,7 @@
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
     "feather-icons": "^4.28.0",
-    "frappe-ui": "https://github.com/frappe/frappe-ui#70af72611c5de96fdd97d472f0cea0470c6c6e3c",
+    "frappe-ui": "^0.1.29",
     "vue": "^3.2.25",
     "vue-router": "^4.0.12"
   },
