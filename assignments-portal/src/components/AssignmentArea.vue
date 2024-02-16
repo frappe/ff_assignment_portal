@@ -207,7 +207,7 @@ const submissions = computed(() => {
     return {
       ...submission,
       creation: dayjs(submission.creation).format('hh:mm A | DD MMMM YYYY'),
-      feedback: submission.feedback,
+      feedback: submission.feedback ? submission.feedback : '-',
     }
   })
 })
