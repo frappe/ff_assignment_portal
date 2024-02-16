@@ -1,7 +1,8 @@
 <template>
   <div>
     <div v-if="!props.assignmentSummary[`day-${props.day}`]">
-      <h2 class="font-semibold text-gray-900">Submission Area</h2>
+      <h1 class="font-black text-gray-900 text-2xl">Day {{ props.day }}</h1>
+      <h2 class="font-medium text-gray-800 text-lg mt-6">Submission Area</h2>
 
       <div class="mt-4">
         <p class="mt-2 text-sm text-gray-500">
@@ -77,10 +78,10 @@
                     submission.status == 'Failed'
                       ? 'red'
                       : submission.status == 'Passed'
-                      ? 'green'
-                      : submission.status == 'Check In Progress'
-                      ? 'blue'
-                      : 'gray'
+                        ? 'green'
+                        : submission.status == 'Check In Progress'
+                          ? 'blue'
+                          : 'gray'
                   "
                   >{{ submission.status }}</Badge
                 >
