@@ -58,7 +58,7 @@
         <div v-else-if="!assignmentSubmissions.data?.length">
           <p class="text-sm text-gray-500">No submissions yet.</p>
         </div>
-
+        <!-- 
         <div class="sm:grid sm:grid-cols-2 gap-2" v-else>
           <div
             v-for="submission in assignmentSubmissions.data"
@@ -92,6 +92,33 @@
               </div>
             </div>
           </div>
+        </div> -->
+
+        <div class="mx-2" v-else>
+          <ListView
+            :columns="[
+              {
+                label: 'Submitted On',
+                key: 'creation',
+                width: '300px',
+              },
+              {
+                label: 'Status',
+                key: 'status',
+                width: '200px',
+              },
+              {
+                label: 'Feedback',
+                key: 'feedback',
+              },
+            ]"
+            :rows="submissions"
+            :options="{
+              showTooltip: false,
+              selectable: false
+            }"
+            row-key="id"
+          />
         </div>
       </div>
     </div>
@@ -106,8 +133,11 @@ import {
   Spinner,
   createResource,
   ErrorMessage,
+  ListView,
 } from 'frappe-ui'
-import { ref } from 'vue'
+import dayjs from 'dayjs'
+
+import { computed, ref } from 'vue'
 import { sessionUser } from '../../src/data/session'
 
 const props = defineProps({
@@ -168,5 +198,17 @@ const assignmentSubmissions = createListResource({
   orderBy: 'creation desc',
   auto: true,
   realtime: true,
+})
+
+const submissions = computed(() => {
+  if (!assignmentSubmissions.data) return []
+
+  return assignmentSubmissions.data.map((submission) => {
+    return {
+      ...submission,
+      creation: dayjs(submission.creation).format('hh:mm A | DD MMMM YYYY'),
+      feedback: submission.feedback,
+    }
+  })
 })
 </script>
