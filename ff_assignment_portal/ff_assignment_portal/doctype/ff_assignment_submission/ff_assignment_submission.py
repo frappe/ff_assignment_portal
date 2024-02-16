@@ -44,11 +44,9 @@ class FFAssignmentSubmission(Document):
 		if not self.submission.endswith(".zip"):
 			frappe.throw("Please upload a zip file.")
 
-
 	def on_update(self):
-		if self.has_value_changed("status"):
-			# self.notify_student()
-			pass
+		if not self.is_new() and self.has_value_changed("status"):
+			self.notify_student()
 
 	def before_insert(self):
 		self.validate_previous_in_progress()
