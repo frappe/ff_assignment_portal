@@ -52,18 +52,31 @@ class FFAssignmentSubmission(Document):
 
 	def before_insert(self):
 		self.validate_previous_in_progress()
+		self.set_submission_summary()
 		self.run_checks()
 	
 	def validate_previous_in_progress(self):
 		previous_in_progress = frappe.db.get_all(
 			ASSIGNMENT_DOCTYPE_NAME, 
-			filters={"status": "Check In Progress"},
+			filters={"status": "Check In Progress", "day": self.day},
 			pluck="name"
 		)
 
 		if previous_in_progress:
 			for name in previous_in_progress:
 				frappe.db.set_value(ASSIGNMENT_DOCTYPE_NAME, name, "status", "Stale")
+
+	def set_submission_summary(self):
+		summary = ""
+
+		if self.day == "4":
+			summary = self.submission
+		else:
+			files = list(self.get_filename_with_contents())
+			summary += f"{len(files)} Files"
+			summary += " (" + ", ".join([f[0] for f in files]) + ")"
+
+		self.submission_summary = summary
 
 
 	def notify_student(self):

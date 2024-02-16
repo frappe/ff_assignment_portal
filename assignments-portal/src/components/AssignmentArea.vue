@@ -58,49 +58,13 @@
         <div v-else-if="!assignmentSubmissions.data?.length">
           <p class="text-sm text-gray-500">No submissions yet.</p>
         </div>
-        <!-- 
-        <div class="sm:grid sm:grid-cols-2 gap-2" v-else>
-          <div
-            v-for="submission in assignmentSubmissions.data"
-            :key="submission.name"
-          >
-            <div class="border p-3 space-y-3 rounded-sm h-full shadow-sm">
-              <div>
-                <h3
-                  v-if="submission.status != 'Check In Progress'"
-                  class="font-medium text-gray-600 text-xs mb-1"
-                >
-                  Result
-                </h3>
-                <Badge
-                  variant="outline"
-                  :theme="statusColorMap[submission.status] || 'gray'"
-                  >{{ submission.status }}</Badge
-                >
-
-                <h3
-                  v-if="submission.status == 'Check In Progress'"
-                  class="font-medium text-gray-600 text-xs mt-3"
-                >
-                  You will be notified when the check is complete.
-                </h3>
-              </div>
-
-              <div v-if="submission.feedback">
-                <h3 class="font-medium text-gray-600 text-xs mb-1">Feedback</h3>
-                <div class="text-base" v-html="submission.feedback" />
-              </div>
-            </div>
-          </div>
-        </div> -->
-
         <div class="mx-2" v-else>
           <ListView
             :columns="[
               {
                 label: 'Submitted On',
                 key: 'creation',
-                width: '300px',
+                width: '200px'
               },
               {
                 label: 'Status',
@@ -110,12 +74,17 @@
               {
                 label: 'Feedback',
                 key: 'feedback',
+                width: '400px',
+              },
+              {
+                label: 'Summary',
+                key: 'submission_summary',
               },
             ]"
             :rows="submissions"
             :options="{
               showTooltip: false,
-              selectable: false
+              selectable: false,
             }"
             row-key="id"
           />
@@ -190,7 +159,7 @@ function handleAssignmentSubmit() {
 
 const assignmentSubmissions = createListResource({
   doctype: 'FF Assignment Submission',
-  fields: ['name', 'feedback', 'status', 'creation'],
+  fields: ['name', 'feedback', 'status', 'creation', 'submission_summary'],
   filters: {
     user: sessionUser(),
     day: props.day,

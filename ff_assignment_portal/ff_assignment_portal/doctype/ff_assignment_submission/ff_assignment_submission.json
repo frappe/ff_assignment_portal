@@ -15,7 +15,8 @@
   "full_name",
   "status",
   "section_break_gutm",
-  "feedback"
+  "feedback",
+  "submission_summary"
  ],
  "fields": [
   {
@@ -64,7 +65,8 @@
   {
    "fieldname": "feedback",
    "fieldtype": "HTML Editor",
-   "label": "Feedback"
+   "label": "Feedback",
+   "read_only": 1
   },
   {
    "fieldname": "day",
@@ -74,11 +76,17 @@
    "options": "1\n2\n3\n4",
    "reqd": 1,
    "sort_options": 1
+  },
+  {
+   "fieldname": "submission_summary",
+   "fieldtype": "Small Text",
+   "label": "Submission Summary",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-16 18:56:55.431634",
+ "modified": "2024-02-16 19:32:01.204535",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",
