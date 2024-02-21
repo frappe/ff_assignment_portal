@@ -56,7 +56,7 @@ class FFAssignmentSubmission(Document):
 	def validate_previous_in_progress(self):
 		previous_in_progress = frappe.db.get_all(
 			ASSIGNMENT_DOCTYPE_NAME, 
-			filters={"status": "Check In Progress", "day": self.day},
+			filters={"status": "Check In Progress", "day": self.day, "user": self.user},
 			pluck="name"
 		)
 

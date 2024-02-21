@@ -47,7 +47,7 @@
    "reqd": 1
   },
   {
-   "default": "Unchecked",
+   "default": "Check In Progress",
    "fieldname": "status",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -86,7 +86,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-16 19:32:01.204535",
+ "modified": "2024-02-21 11:36:36.918844",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",
