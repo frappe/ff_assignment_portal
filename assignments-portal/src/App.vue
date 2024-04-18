@@ -24,7 +24,7 @@
         >
           <span class="flex items-center px-6 py-4 text-sm font-medium">
             <span
-              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 group-hover:bg-blue-800"
+              class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-green-600 group-hover:bg-green-800"
             >
               <CheckBadgeIcon class="h-6 w-6 text-white" aria-hidden="true" />
             </span>

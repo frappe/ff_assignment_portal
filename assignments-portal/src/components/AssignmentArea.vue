@@ -1,7 +1,7 @@
 <template>
   <div>
+    <h1 class="font-black text-gray-900 text-2xl">Day {{ props.day }} Assignment</h1>
     <div v-if="!props.assignmentSummary[`day-${props.day}`]">
-      <h1 class="font-black text-gray-900 text-2xl">Day {{ props.day }}</h1>
       <h2 class="font-medium text-gray-800 text-lg mt-6">Submission Area</h2>
 
       <div class="mt-4">
