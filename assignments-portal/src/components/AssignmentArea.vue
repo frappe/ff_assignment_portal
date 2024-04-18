@@ -19,11 +19,11 @@
                 '/api/method/ff_assignment_portal.api.upload_assignment_submission',
             }"
           >
-            <template v-slot="{ uploading, openFileSelector, error }">
+            <template v-slot="{ uploading, openFileSelector, error, progress }">
               <Button @click="openFileSelector" :loading="uploading"
                 >Attach Solution Zip</Button
               >
-
+              <p class="text-sm text-gray-500 mt-2 block" v-if="uploading">{{ progress }}% uploaded</p>
               <ErrorMessage class="mt-2" :message="error" />
             </template>
           </FileUploader>
@@ -38,10 +38,11 @@
                 '/api/method/ff_assignment_portal.api.upload_assignment_submission',
             }"
           >
-            <template v-slot="{ uploading, openFileSelector, error }">
+            <template v-slot="{ uploading, openFileSelector, error, progress }">
               <Button @click="openFileSelector" :loading="uploading"
                 >Attach Demo Video</Button
               >
+              <p class="text-sm text-gray-500 mt-2 block" v-if="uploading">{{ progress }}% uploaded</p>
               <ErrorMessage class="mt-2" :message="error" />
             </template>
           </FileUploader>
