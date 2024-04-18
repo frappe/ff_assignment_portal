@@ -26,7 +26,7 @@
             <span
               class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 group-hover:bg-blue-800"
             >
-              <CheckIcon class="h-6 w-6 text-white" aria-hidden="true" />
+              <CheckBadgeIcon class="h-6 w-6 text-white" aria-hidden="true" />
             </span>
             <span class="ml-4 text-sm font-medium text-gray-900">{{
               step.name
@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { CheckIcon } from '@heroicons/vue/24/solid'
+import { CheckBadgeIcon } from '@heroicons/vue/24/solid'
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'
