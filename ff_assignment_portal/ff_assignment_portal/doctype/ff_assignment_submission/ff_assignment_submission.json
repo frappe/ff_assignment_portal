@@ -87,12 +87,13 @@
   {
    "fieldname": "demo_video",
    "fieldtype": "Attach",
-   "label": "Demo Video"
+   "label": "Demo Video",
+   "mandatory_depends_on": "eval:doc.day===\"4\""
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-18 05:54:30.282220",
+ "modified": "2024-04-18 05:55:02.070072",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",

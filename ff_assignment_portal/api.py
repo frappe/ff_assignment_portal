@@ -46,8 +46,8 @@ def upload_assignment_submission():
 		filename = file.filename
 
 		content_type = guess_type(filename)[0]
-		# throw if not zip file
-		if content_type != "application/zip":
+		
+		if content_type not in ("application/zip", "video/mp4"):
 			frappe.throw("Only zip files are allowed")
 
 	frappe.local.uploaded_file = content

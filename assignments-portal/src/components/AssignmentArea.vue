@@ -13,7 +13,7 @@
         <div class="mt-4 flex flex-row space-x-3">
           <FileUploader
             @error="handleUploadError"
-            @success="handleUploadSuccess"
+            @success="(file) => handleUploadSuccess('assignment', file)"
             :upload-args="{
               upload_endpoint:
                 '/api/method/ff_assignment_portal.api.upload_assignment_submission',
@@ -24,6 +24,24 @@
                 >Attach Solution Zip</Button
               >
 
+              <ErrorMessage class="mt-2" :message="error" />
+            </template>
+          </FileUploader>
+
+        
+          <FileUploader
+            v-if="props.day == 4"
+            @error="handleUploadError"
+            @success="(file) => handleUploadSuccess('demo_video', file)"
+            :upload-args="{
+              upload_endpoint:
+                '/api/method/ff_assignment_portal.api.upload_assignment_submission',
+            }"
+          >
+            <template v-slot="{ uploading, openFileSelector, error }">
+              <Button @click="openFileSelector" :loading="uploading"
+                >Attach Demo Video</Button
+              >
               <ErrorMessage class="mt-2" :message="error" />
             </template>
           </FileUploader>
@@ -39,10 +57,28 @@
         </div>
       </div>
 
-      <p v-if="selectedFileDoc" class="mt-2 text-sm text-gray-500">
-        Selected File: {{ selectedFileDoc.file_name }}
-      </p>
-      <p v-else class="mt-2 text-sm text-gray-500">No File Selected</p>
+      <div class="mt-4 flex flex-col gap-2">
+        <p class="mt-2 text-sm text-gray-600"><strong>Selected Assignment File: </strong>
+          <span  v-if="selectedFileDoc">
+            <CheckCircleIcon class="w-4 text-green-700 inline"/>
+            {{ selectedFileDoc.file_name }}
+          </span>
+          <span v-else>
+            <ExclamationCircleIcon class="w-4 text-amber-600 inline" />
+            No File Selected</span>
+        </p>
+
+        <p v-if="props.day == 4" class="mt-2 text-sm text-gray-600"><strong>Selected Demo File: </strong>
+          <span  v-if="selectedDemoVideo">
+            <CheckCircleIcon class="w-4 text-green-700 inline"/>
+            {{ selectedDemoVideo.file_name }}
+          </span>
+          <span v-else>
+            <ExclamationCircleIcon class="w-4 text-amber-600 inline" />
+            No File Selected
+          </span>
+        </p>
+      </div>
 
       <ErrorMessage class="mt-2" :message="submitAssignment.error" />
     </div>
@@ -105,37 +141,39 @@
             </div>
           </div>
         </div>
-        <!-- <div class="mx-2" v-else>
-          <ListView
-            :columns="[
-              {
-                label: 'Submitted On',
-                key: 'creation',
-                width: '200px'
-              },
-              {
-                label: 'Status',
-                key: 'status',
-                width: '200px',
-              },
-              {
-                label: 'Feedback',
-                key: 'feedback',
-                width: '400px',
-              },
-              {
-                label: 'Summary',
-                key: 'submission_summary',
-              },
-            ]"
-            :rows="submissions"
-            :options="{
-              showTooltip: false,
-              selectable: false,
-            }"
-            row-key="id"
-          />
-        </div> -->
+        <div>
+          <!-- LATER -->
+  <!-- <ListView
+    class="h-[250px]"
+    :columns="listColumns"
+    :rows="[
+      {
+        id: 1,
+        name: 'John Doe',
+        email: 'john@doe.com',
+        status: 'Active',
+        role: 'Developer',
+        user_image: 'https://avatars.githubusercontent.com/u/499550',
+      },
+      {
+        id: 2,
+        name: 'Jane Doe',
+        email: 'jane@doe.com',
+        status: 'Inactive',
+        role: 'HR',
+        user_image: 'https://avatars.githubusercontent.com/u/499120',
+      },
+    ]"
+    :options="listOptions"
+    row-key="id"
+  >
+    <template #cell="{ item, row, column }">
+      <span class="font-medium text-gray-700">
+        {{ row }} - {{ column }}
+      </span>
+    </template>
+  </ListView> -->
+</div>
       </div>
     </div>
   </div>
@@ -151,6 +189,7 @@ import {
   ErrorMessage,
   ListView,
 } from 'frappe-ui'
+import { CheckCircleIcon, ExclamationCircleIcon } from '@heroicons/vue/24/solid'
 import dayjs from 'dayjs'
 
 import { computed, ref } from 'vue'
@@ -179,9 +218,16 @@ const statusColorMap = {
 }
 
 const selectedFileDoc = ref(null)
+const selectedDemoVideo = ref(null)
 
-function handleUploadSuccess(file) {
-  selectedFileDoc.value = file
+function handleUploadSuccess(uploadType, file) {
+  if (uploadType === 'demo_video') {
+    selectedDemoVideo.value = file
+    
+  } else {
+    selectedFileDoc.value = file
+  }
+
 }
 
 function handleUploadError(error) {
@@ -192,15 +238,22 @@ const submitAssignment = createResource({
   url: '/api/method/ff_assignment_portal.ff_assignment_portal.doctype.ff_assignment_submission.ff_assignment_submission.submit_assignment',
   onSuccess() {
     selectedFileDoc.value = null
+    selectedDemoVideo.value = null
     assignmentSubmissions.reload()
     props.assignmentSummaryResource.reload()
   },
 })
 
 function handleAssignmentSubmit() {
+  console.log({
+    day: props.day,
+    file: selectedFileDoc.value,
+    demo_video: selectedDemoVideo.value,
+  })
   submitAssignment.submit({
     day: props.day,
     file: selectedFileDoc.value,
+    demo_video: selectedDemoVideo.value,
   })
 }
 

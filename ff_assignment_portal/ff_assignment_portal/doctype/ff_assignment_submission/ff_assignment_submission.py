@@ -68,7 +68,8 @@ class FFAssignmentSubmission(Document):
 		summary = ""
 
 		if self.day == "4":
-			summary = self.submission
+			summary = ""
+			summary += f"Assignment: {self.submission}, Demo Video: {self.demo_video}"
 		else:
 			files = list(self.get_filename_with_contents())
 			summary += f"{len(files)} Files"
@@ -481,11 +482,16 @@ class SubmissionDocTypeJSON:
 
 
 @frappe.whitelist()
-def submit_assignment(day, file):
+def submit_assignment(day, file, demo_video=None):
+	if day == "4" and not demo_video:
+		frappe.throw("Demo video is required to be submitted with final assignment!")
+
 	submission_doc: FFAssignmentSubmission = frappe.new_doc("FF Assignment Submission")
 	submission_doc.user = frappe.session.user
 	submission_doc.submission = file.get("file_url")
 	submission_doc.day = day
+	if demo_video:
+		submission_doc.demo_video = demo_video.get("file_url")
 	submission_doc.insert()
 
 
