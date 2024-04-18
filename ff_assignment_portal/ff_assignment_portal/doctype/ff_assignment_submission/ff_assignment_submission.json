@@ -11,6 +11,7 @@
   "user",
   "day",
   "submission",
+  "demo_video",
   "column_break_uxap",
   "full_name",
   "status",
@@ -82,11 +83,16 @@
    "fieldtype": "Small Text",
    "label": "Submission Summary",
    "read_only": 1
+  },
+  {
+   "fieldname": "demo_video",
+   "fieldtype": "Attach",
+   "label": "Demo Video"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-02-21 11:36:36.918844",
+ "modified": "2024-04-18 05:54:30.282220",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",
