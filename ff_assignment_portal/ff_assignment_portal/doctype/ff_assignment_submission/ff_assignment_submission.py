@@ -68,6 +68,7 @@ class FFAssignmentSubmission(Document):
 			queue="long",
 		)
 
+	@frappe.whitelist()
 	def _generate_similarity_score(self):
 		submissions = frappe.db.get_all(
 			self.doctype,
