@@ -52,12 +52,51 @@ class FFAssignmentSubmission(Document):
 		self.validate_previous_in_progress()
 		self.set_submission_summary()
 		self.run_checks()
-	
+		self.set_file_hashes()
+		self.enqueue_generate_similarity_score()
+
+	def enqueue_generate_similarity_score(self):
+		if self.day == "4":
+			return
+
+		frappe.enqueue_doc(
+			ASSIGNMENT_DOCTYPE_NAME,
+			self.name,
+			"_generate_similarity_score",
+			queue="long",
+		)
+
+	def _generate_similarity_score(self):
+		submissions = frappe.db.get_all(
+			self.doctype,
+			fields=["name", "hashes"],
+			filters={"day": self.day, "status": "Passed", "user": ("!=", self.user)},
+		)
+
+		max_similarity_score = 0
+		similar_assignment = None
+
+		for submission in submissions:
+			if not submission.hashes:
+				continue
+			file_hashes = frappe.parse_json(submission.hashes)
+			current_submission_hashes = frappe.parse_json(self.hashes)
+
+			similarity_score = compare_hashes(file_hashes, current_submission_hashes)
+
+			if similarity_score > max_similarity_score:
+				max_similarity_score = similarity_score
+				similar_assignment = submission.name
+
+		self.similarity_score = max_similarity_score
+		self.similar_assignment = similar_assignment
+		self.save()
+
 	def validate_previous_in_progress(self):
 		previous_in_progress = frappe.db.get_all(
-			ASSIGNMENT_DOCTYPE_NAME, 
+			ASSIGNMENT_DOCTYPE_NAME,
 			filters={"status": "Check In Progress", "day": self.day, "user": self.user},
-			pluck="name"
+			pluck="name",
 		)
 
 		if previous_in_progress:
@@ -76,7 +115,6 @@ class FFAssignmentSubmission(Document):
 			summary += " (" + ", ".join([f[0] for f in files]) + ")"
 
 		self.submission_summary = summary
-
 
 	def notify_student(self):
 		if not frappe.conf.developer_mode:
@@ -125,7 +163,9 @@ class FFAssignmentSubmission(Document):
 		for filename, file_json in filename_with_contents:
 			doctype_name = guess_doctype_from_filename(filename)
 			submission_doctype_json = SubmissionDocTypeJSON(
-				filename, file_json, **doctype_check_parameters_map.get(doctype_name, {})
+				filename,
+				file_json,
+				**doctype_check_parameters_map.get(doctype_name, {}),
 			)
 			problems = submission_doctype_json.run_checks()
 			if problems:
@@ -200,7 +240,9 @@ class FFAssignmentSubmission(Document):
 				problems.append("Notification must be for Airplane Flight DocType.")
 
 			condition = (
-				notification_json.get("condition", "").replace(" ", "").replace(r"\"", "'")
+				notification_json.get("condition", "")
+				.replace(" ", "")
+				.replace(r"\"", "'")
 			)
 
 			# replace double quotes with single quotes in condition
@@ -242,7 +284,9 @@ class FFAssignmentSubmission(Document):
 					break
 
 			if not found:
-				problems.append(f"Required file `{frappe.bold(required_file)}` not found.")
+				problems.append(
+					f"Required file `{frappe.bold(required_file)}` not found."
+				)
 
 	def run_checks_for_day_3(self):
 		problems = self.run_schema_checks_for_day_3()
@@ -312,9 +356,29 @@ class FFAssignmentSubmission(Document):
 						try:
 							file_json = json.loads(file_json)
 						except json.decoder.JSONDecodeError:
-							frappe.throw(f"There is a problem with your JSON file: {frappe.bold(file_name)}")
+							frappe.throw(
+								f"There is a problem with your JSON file: {frappe.bold(file_name)}"
+							)
 					file_name = file_name.split("/")[-1]
 					yield file_name, file_json
+
+	def set_file_hashes(self):
+		if self.day == "4":
+			return
+
+		from hashlib import md5
+
+		files_with_content = self.get_filename_with_contents()
+		hashes = {}
+
+		for file_name, content in files_with_content:
+			if file_name.endswith(".json"):
+				content = frappe.as_json(content)
+
+			hash_obj = md5(content.encode())
+			hashes[file_name] = hash_obj.hexdigest()
+
+		self.hashes = frappe.as_json(hashes, indent=2)
 
 
 class SubmissionDocTypeJSON:
@@ -402,7 +466,9 @@ class SubmissionDocTypeJSON:
 
 	def validate_naming_rule_type(self, naming_rule_type):
 		if not self.doctype_meta.get("naming_rule") == naming_rule_type:
-			self.problems.append(f"{self.doctype} naming rule should be {naming_rule_type}")
+			self.problems.append(
+				f"{self.doctype} naming rule should be {naming_rule_type}"
+			)
 
 	def validate_doctype_connections(
 		self, expected_num_connections, expected_connection_doctypes
@@ -424,7 +490,9 @@ class SubmissionDocTypeJSON:
 	def validate_doctype_flags(self):
 		for flag, summary in self.checked_doctype_flags:
 			if not self.doctype_meta.get(flag, 0) == 1:
-				self.problems.append(f"{self.doctype} DocType must be {frappe.bold(summary)}.")
+				self.problems.append(
+					f"{self.doctype} DocType must be {frappe.bold(summary)}."
+				)
 
 	def validate_document_states(self):
 		states = self.doctype_meta.get("states", [])
@@ -592,3 +660,15 @@ def check_permissions_for_day_3(json_files, problems):
 			problems.append(
 				f"Role {frappe.bold(role)} must have {frappe.bold(', '.join(missing_permissions))} permissions for Airplane Ticket DocType."
 			)
+
+
+def compare_hashes(other: dict, original: dict) -> float:
+	"Compares file hashes and returns similarity score percent"
+	score = 0
+
+	for filename, hash in original.items():
+		if other.get(filename, "") == hash:
+			# MATCH!!
+			score += 1 / len(original)
+
+	return score * 100

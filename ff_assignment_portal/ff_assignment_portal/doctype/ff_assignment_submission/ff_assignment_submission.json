@@ -15,9 +15,12 @@
   "column_break_uxap",
   "full_name",
   "status",
+  "similarity_score",
+  "similar_assignment",
   "section_break_gutm",
   "feedback",
-  "submission_summary"
+  "submission_summary",
+  "hashes"
  ],
  "fields": [
   {
@@ -89,11 +92,32 @@
    "fieldtype": "Attach",
    "label": "Demo Video",
    "mandatory_depends_on": "eval:doc.day===\"4\""
+  },
+  {
+   "fieldname": "hashes",
+   "fieldtype": "Code",
+   "label": "Hashes",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "similarity_score",
+   "fieldtype": "Percent",
+   "label": "Similarity Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "similar_assignment",
+   "fieldtype": "Link",
+   "label": "Similar Assignment",
+   "options": "FF Assignment Submission",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-04-18 05:55:02.070072",
+ "modified": "2024-05-03 20:07:40.250948",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",
