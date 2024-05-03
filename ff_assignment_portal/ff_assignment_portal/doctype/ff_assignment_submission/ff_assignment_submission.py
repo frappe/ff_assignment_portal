@@ -53,6 +53,8 @@ class FFAssignmentSubmission(Document):
 		self.set_submission_summary()
 		self.run_checks()
 		self.set_file_hashes()
+
+	def after_insert(self):
 		self.enqueue_generate_similarity_score()
 
 	def enqueue_generate_similarity_score(self):
