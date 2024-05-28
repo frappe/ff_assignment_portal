@@ -6,6 +6,7 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "introduction",
   "data_set",
   "problems"
  ],
@@ -23,6 +24,11 @@
    "fieldtype": "Table",
    "label": "Problems",
    "options": "SQL Set Problem"
+  },
+  {
+   "fieldname": "introduction",
+   "fieldtype": "Markdown Editor",
+   "label": "Introduction"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -32,7 +38,7 @@
    "link_fieldname": "problem_set"
   }
  ],
- "modified": "2024-05-28 10:55:48.773718",
+ "modified": "2024-05-28 12:01:34.642060",
  "modified_by": "Administrator",
  "module": "SQL Portal",
  "name": "SQL Problem Set",
