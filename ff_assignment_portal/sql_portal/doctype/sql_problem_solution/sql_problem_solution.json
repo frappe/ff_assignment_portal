@@ -10,7 +10,9 @@
   "column_break_aakx",
   "status",
   "section_break_haav",
-  "last_submitted_query"
+  "last_submitted_query",
+  "section_break_xxyc",
+  "feedback"
  ],
  "fields": [
   {
@@ -27,7 +29,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Pending\nCorrect\nIncorrect"
+   "options": "Not Attempted\nPending\nCorrect\nIncorrect"
   },
   {
    "fieldname": "last_submitted_query",
@@ -42,17 +44,38 @@
   {
    "fieldname": "section_break_haav",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "section_break_xxyc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "feedback",
+   "fieldtype": "Markdown Editor",
+   "label": "Feedback"
   }
  ],
  "index_web_pages_for_search": 1,
- "istable": 1,
  "links": [],
- "modified": "2024-05-28 10:59:21.122675",
+ "modified": "2024-05-28 11:51:09.949577",
  "modified_by": "Administrator",
  "module": "SQL Portal",
  "name": "SQL Problem Solution",
  "owner": "Administrator",
- "permissions": [],
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
  "sort_field": "creation",
  "sort_order": "DESC",
  "states": []

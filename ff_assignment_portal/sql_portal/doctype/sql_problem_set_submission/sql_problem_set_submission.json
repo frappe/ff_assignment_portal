@@ -7,9 +7,7 @@
  "field_order": [
   "user",
   "column_break_jtcf",
-  "problem_set",
-  "section_break_epqv",
-  "solutions"
+  "problem_set"
  ],
  "fields": [
   {
@@ -31,21 +29,11 @@
    "label": "Problem Set",
    "options": "SQL Problem Set",
    "reqd": 1
-  },
-  {
-   "fieldname": "section_break_epqv",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "solutions",
-   "fieldtype": "Table",
-   "label": "Solutions",
-   "options": "SQL Problem Solution"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-28 11:00:32.470255",
+ "modified": "2024-05-28 11:09:57.374943",
  "modified_by": "Administrator",
  "module": "SQL Portal",
  "name": "SQL Problem Set Submission",
