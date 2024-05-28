@@ -6,6 +6,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "student",
   "problem",
   "column_break_aakx",
   "status",
@@ -53,11 +54,18 @@
    "fieldname": "feedback",
    "fieldtype": "Markdown Editor",
    "label": "Feedback"
+  },
+  {
+   "fieldname": "student",
+   "fieldtype": "Link",
+   "label": "Student",
+   "options": "User",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-28 11:51:09.949577",
+ "modified": "2024-05-28 20:05:50.196450",
  "modified_by": "Administrator",
  "module": "SQL Portal",
  "name": "SQL Problem Solution",
