@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { session } from './data/session'
 import { userResource } from '@/data/user'
 
-// /assignments-portal/framework/day-1
-// /assignments-portal/sql/pset-0
 
 const routes = [
   {

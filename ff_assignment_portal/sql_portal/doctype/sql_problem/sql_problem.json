@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "autoname": "autoincrement",
+ "creation": "2024-05-28 10:44:53.988790",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "problem_set",
+  "consider_order",
+  "column_break_iksx",
+  "problem_statement",
+  "correct_query"
+ ],
+ "fields": [
+  {
+   "fieldname": "problem_set",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Problem Set",
+   "options": "SQL Problem Set",
+   "reqd": 1
+  },
+  {
+   "fieldname": "correct_query",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Correct Query",
+   "reqd": 1
+  },
+  {
+   "fieldname": "problem_statement",
+   "fieldtype": "Markdown Editor",
+   "label": "Problem Statement"
+  },
+  {
+   "default": "0",
+   "fieldname": "consider_order",
+   "fieldtype": "Check",
+   "label": "Consider Order?"
+  },
+  {
+   "fieldname": "column_break_iksx",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-05-28 10:56:47.143226",
+ "modified_by": "Administrator",
+ "module": "SQL Portal",
+ "name": "SQL Problem",
+ "naming_rule": "Autoincrement",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

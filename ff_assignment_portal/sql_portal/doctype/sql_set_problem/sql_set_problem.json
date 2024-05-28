@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-05-28 10:55:11.596389",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "problem"
+ ],
+ "fields": [
+  {
+   "fieldname": "problem",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Problem",
+   "options": "SQL Problem"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2024-05-28 10:55:27.190403",
+ "modified_by": "Administrator",
+ "module": "SQL Portal",
+ "name": "SQL Set Problem",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
