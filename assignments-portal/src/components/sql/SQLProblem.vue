@@ -15,7 +15,7 @@
 				/>
 	
 			<Button  variant="outline" theme="blue" v-if="status !== 'Correct'" :loading="submitSolution.loading" @click="(e) => handleSolutionSubmit(e)">Submit</Button>
-			<Badge class="shrink-0 w-fit" theme="green" v-else>Passed</Badge>
+			<Badge class="shrink-0 w-fit" theme="green" v-else>Passed ✅</Badge>
 			</div>
 
 			<div v-if="feedback" class="pl-3 max-w-lg">
