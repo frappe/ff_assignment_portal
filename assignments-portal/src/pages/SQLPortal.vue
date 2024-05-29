@@ -88,7 +88,7 @@ const problemSet = createDocumentResource({
 })
 
 const submitSolution = createResource({
-    url: "/api/method/ff_assignment_portal.api.submit_sql_solution",
+    url: "ff_assignment_portal.api.submit_sql_solution",
     onSuccess(d) {
         if (d.status === "Correct") {
                 confetti({
