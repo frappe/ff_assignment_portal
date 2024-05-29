@@ -9,75 +9,114 @@ from frappe.model.document import Document
 
 class SQLProblemSolution(Document):
 	def before_save(self):
-		self.check_solution()
-	
-	def check_solution(self):
+		self.run_check()
+
+	def run_check(self) -> None:
 		self.feedback = None
-
-		problem_name = self.problem
-		submitted_query = self.last_submitted_query
-		correct_query, consider_order = frappe.db.get_value("SQL Problem", problem_name, ["correct_query", "consider_order"])
-		
-		db_path = self.get_data_set_path()
-		db_uri = f"file:{db_path}?mode=ro" # https://docs.python.org/3/library/sqlite3.html#how-to-work-with-sqlite-uris
-		con = sqlite3.connect(db_uri, uri=True)
-		cur = con.cursor()
-
-		cur.execute(correct_query)
-		correct_output = cur.fetchall()
+		self.set_problem_data()
+		self.set_correct_output()
 
 		try:
+			cur = self.get_db_cursor()
+			submitted_query = self.last_submitted_query
 			cur.execute(submitted_query)
-			student_output = cur.fetchall()
+			self.student_output = cur.fetchall()
 		except sqlite3.OperationalError as e:
 			self.feedback = f"Problem with your query: <br>{frappe.bold(e)}"
 			self.status = "Incorrect"
 			return
 
-		num_rows_student = len(student_output)
-		num_rows_correct = len(correct_output)
-
-		if num_rows_student != num_rows_correct:
-			self.feedback = f"The number of rows returned are incorrect. Your query returns {frappe.bold(num_rows_student)} rows, while expected number of rows is {frappe.bold(num_rows_correct)}."
-			self.status = "Incorrect"
-			return
-		
-		num_columns_correct = 0
-		num_columns_student = 0
-
-		if num_rows_correct > 0:
-			num_columns_correct = len(correct_output[0])
-		
-		if num_rows_student > 0:
-			num_columns_student = len(student_output[0])
-
-		if num_columns_student != num_columns_correct:
-			self.feedback = f"The number of columns returned are incorrect. Your query returns {frappe.bold(num_columns_student)} columns, while expected number of columns is {frappe.bold(num_columns_correct)}."
-			self.status = "Incorrect"
-			return
-
-		if consider_order:
-			for i in range(num_rows_correct):
-				for j in range(num_columns_correct):
-					if student_output[i][j] != correct_output[i][j]:
-						self.feedback = f"Incorrect Output on row {i+1}, column {j+1}."
-						self.status = "Incorrect"
-						return
-
+		if (
+			self.column_count_match()
+			and self.row_count_match()
+			and self.row_data_match()
+		):
+			self.status = "Correct"
 		else:
-			if set(student_output) != set(correct_output):
-				self.feedback = "Incorrect output"
-				self.status = "Incorrect"
-				return
+			self.status = "Incorrect"
 
-		self.status = "Correct"
-	
-	def get_data_set_path(self):
+	def set_problem_data(self):
+		problem_name = self.problem
+		self.problem_data = frappe.db.get_value(
+			"SQL Problem",
+			problem_name,
+			["correct_query", "consider_order"],
+			as_dict=True,
+		)
+
+	def set_correct_output(self):
+		cur = self.get_db_cursor()
+		cur.execute(self.problem_data.correct_query)
+		self.correct_output = cur.fetchall()
+
+	def get_db_cursor(self):
+		if hasattr(self, "db_cursor"):
+			return self.db_cursor
+
+		db_path = self.get_data_set_path()
+		db_uri = (
+			f"file:{db_path}?mode=ro"
+		)  # https://docs.python.org/3/library/sqlite3.html#how-to-work-with-sqlite-uris
+		con = sqlite3.connect(db_uri, uri=True)
+		self.db_cursor = con.cursor()
+		return self.db_cursor
+
+	def get_data_set_path(self) -> str:
 		problem_name = self.problem
 
 		pset_name = frappe.db.get_value("SQL Problem", problem_name, "problem_set")
 
 		data_set_url = frappe.db.get_value("SQL Problem Set", pset_name, "data_set")
-		data_set_path = frappe.get_doc("File", {"file_url": data_set_url}).get_full_path()
+		data_set_path = frappe.get_doc(
+			"File", {"file_url": data_set_url}
+		).get_full_path()
 
 		return data_set_path
+
+	def column_count_match(self) -> bool:
+		num_columns_student = get_num_columns(self.student_output)
+		num_columns_correct = get_num_columns(self.correct_output)
+
+		if num_columns_student != num_columns_correct:
+			self.feedback = f"The number of columns returned are incorrect. Your query returns {frappe.bold(num_columns_student)} columns, while expected number of columns is {frappe.bold(num_columns_correct)}."
+			return False
+
+		return True
+
+	def row_count_match(self) -> bool:
+		num_rows_student = len(self.student_output)
+		num_rows_correct = len(self.correct_output)
+
+		if num_rows_student != num_rows_correct:
+			self.feedback = f"The number of rows returned are incorrect. Your query returns {frappe.bold(num_rows_student)} rows, while expected number of rows is {frappe.bold(num_rows_correct)}."
+			return False
+
+		return True
+
+	def row_data_match(self) -> bool:
+		num_rows_correct = len(self.correct_output)
+		num_columns_correct = get_num_columns(self.correct_output)
+
+		if self.problem_data.consider_order:
+			for i in range(num_rows_correct):
+				for j in range(num_columns_correct):
+					if self.student_output[i][j] != self.correct_output[i][j]:
+						self.feedback = f"Incorrect Output on row {i+1}, column {j+1}."
+						return False
+
+		else:
+			if set(self.student_output) != set(self.correct_output):
+				self.feedback = "Incorrect output"
+				return False
+
+		return True
+
+
+def get_num_columns(output: list) -> int:
+	num_columns = 0
+	num_rows = len(output)
+
+	if num_rows > 0:
+		num_columns = len(output[0])
+
+	return num_columns
