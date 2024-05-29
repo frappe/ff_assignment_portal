@@ -30,9 +30,14 @@ class SQLProblemSolution(Document):
 		cur.execute(correct_query)
 		correct_output = list(cur)
 
-		# TODO: Handle exceptions properly
-		cur.execute(submitted_query)
-		student_output = list(cur)
+		try:
+			cur.execute(submitted_query)
+			student_output = list(cur)
+		except sqlite3.OperationalError as e:
+			self.feedback = f"Problem with your query: <br>{frappe.bold(e)}"
+			self.status = "Incorrect"
+			return
+
 
 		print(correct_output)
 		print(student_output)
