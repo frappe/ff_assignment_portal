@@ -46,7 +46,7 @@ def upload_assignment_submission():
 		filename = file.filename
 
 		content_type = guess_type(filename)[0]
-		
+
 		if content_type not in ("application/zip", "video/mp4"):
 			frappe.throw("Only zip files are allowed")
 
@@ -66,3 +66,24 @@ def upload_assignment_submission():
 			"content": content,
 		}
 	).save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def submit_sql_solution(problem, solution):
+	current_user = frappe.session.user
+	already_attempted = frappe.db.exists(
+		"SQL Problem Solution", {"problem": problem, "student": current_user}
+	)
+
+	if already_attempted:
+		attempt_name = already_attempted
+		solution_doc = frappe.get_doc("SQL Problem Solution", attempt_name)
+	else:
+		solution_doc = frappe.new_doc("SQL Problem Solution")
+		solution_doc.student = current_user
+		solution_doc.problem = problem
+
+	solution_doc.last_submitted_query = solution
+	solution_doc.save(ignore_permissions=True)
+
+	return solution_doc

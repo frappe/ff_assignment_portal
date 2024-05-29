@@ -37,7 +37,7 @@ import { ref, reactive } from 'vue';
 import markdownit from 'markdown-it'
 import { useRoute } from 'vue-router';
 import { sessionUser } from '../../src/data/session'
-import { createDocumentResource, LoadingText, createListResource, FormControl, Button } from 'frappe-ui';
+import { createDocumentResource, LoadingText, createListResource, FormControl, Button, createResource } from 'frappe-ui';
 
 import confetti from 'canvas-confetti';
 
@@ -87,18 +87,17 @@ const problemSet = createDocumentResource({
     }
 })
 
-const sqlProblemSolution = createListResource({
-    doctype: "SQL Problem Solution",
-    insert: {
-        onSuccess(d) {
-            if (d.status === "Correct") {
+const submitSolution = createResource({
+    url: "/api/method/ff_assignment_portal.api.submit_sql_solution",
+    onSuccess(d) {
+        if (d.status === "Correct") {
                 confetti({
                     particleCount: 100,
                     spread: 70,
                     origin: {x: confettiPosition.x, y: confettiPosition.y}
                 });
             }
-        }
+
     }
 })
 
@@ -106,10 +105,9 @@ function handleSolutionSubmit(e, problem) {
     confettiPosition.x = e.x / window.innerWidth;
     confettiPosition.y = e.y / window.innerHeight;
 
-    sqlProblemSolution.insert.submit({
+    submitSolution.submit({
         problem,
-        last_submitted_query: solutions[problem],
-        student: sessionUser()
+        solution: solutions[problem]
     })
 }
 
