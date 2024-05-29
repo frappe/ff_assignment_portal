@@ -1,31 +1,36 @@
 <template>
-	<div>
-		<div class="mt-3" v-html="md2html(problem.problem_statement)"></div>
-		<div class="mt-1 flex flex-row items-end space-x-1 max-w-lg">
-			<FormControl
-				:type="'textarea'"
-				size="sm"
-				class="w-80"
-				variant="subtle"
-				placeholder="Your query"
-				label="Solution"
-				v-model="solution"
-				:disabled="status === 'Correct'"
-			/>
+	<Card :title="`Problem #${props.index + 1}`">
+		<div class="prose-sm" v-html="md2html(problem.problem_statement)"></div>
+		<div class="flex flex-row space-x-3 mt-3 divide-x-2">	
+			<div class="flex flex-col space-x-1 max-w-lg space-y-2">
+				<FormControl
+					:type="'textarea'"
+					size="sm"
+					class="w-96"
+					variant="subtle"
+					placeholder="Your query"
+					label="Solution"
+					v-model="solution"
+					:disabled="status === 'Correct'"
+				/>
+	
+			<Button  variant="outline" theme="blue" v-if="status !== 'Correct'" :loading="submitSolution.loading" @click="(e) => handleSolutionSubmit(e)">Submit</Button>
+			<Badge class="shrink-0 w-fit" theme="green" v-else>Passed</Badge>
+			</div>
 
-		<Button v-if="status !== 'Correct'" @click="(e) => handleSolutionSubmit(e)">Submit</Button>
-		<Badge theme="green" v-else>Passed</Badge>
+			<div v-if="feedback" class="pl-3 max-w-lg">
+				<h3 class=" font-semibold text-gray-600 text-sm">Feedback</h3>
+				<div class="prose-sm" v-html="feedback"></div>
+			</div>
 		</div>
-
-		<div v-if="feedback" class="prose-sm" v-html="feedback"></div>
-	</div>
+	</Card>
 </template>
 
 <script setup>
 import { md2html } from '@/utils';
 import { ref, reactive } from 'vue';
 import confetti from 'canvas-confetti';
-import { FormControl, Button, createResource, Badge } from 'frappe-ui';
+import { FormControl, Button, createResource, Badge, Card } from 'frappe-ui';
 
 const solution = ref("");
 const status = ref("Not Attempted");
@@ -37,6 +42,10 @@ const props = defineProps({
 	problem: {
 		type: Object,
 		required: true
+	},
+	index: {
+		type: Number,
+		default: 1
 	}
 })
 
