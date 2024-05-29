@@ -11,48 +11,22 @@
         <ol class="mt-10" v-for="problem, index in problems" :key="problem.name">
             <li>
                 <span class="font-semibold text-gray-600 underline underline-offset-1">Problem {{ index + 1 }}</span>
-                <div class="mt-3" v-html="md2html(problem.problem_statement)"></div>
-
-                <div class="mt-1 flex flex-row items-end space-x-1 max-w-lg">
-                    <FormControl
-                        :type="'textarea'"
-                        size="sm"
-                        class="w-80"
-                        variant="subtle"
-                        placeholder="Your query"
-                        label="Solution"
-                        v-model="solutions[problem.name]"
-                    />
-    
-                    <Button @click="(e) => handleSolutionSubmit(e, problem.name)">Submit</Button>
-                </div>
-
+                <SQLProblem :problem="problem" />
             </li>
         </ol>
     </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import markdownit from 'markdown-it'
+import { ref } from 'vue';
+import { md2html } from '@/utils';
 import { useRoute } from 'vue-router';
-import { sessionUser } from '../../src/data/session'
-import { createDocumentResource, LoadingText, createListResource, FormControl, Button, createResource } from 'frappe-ui';
-
-import confetti from 'canvas-confetti';
-
-window.c = confetti
+import { sessionUser } from '@/data/session'
+import SQLProblem from '@/components/sql/SQLProblem.vue';
+import { createDocumentResource, LoadingText, createListResource} from 'frappe-ui';
 
 const route = useRoute();
 const problems = ref([]);
-const solutions = reactive({});
-const confettiPosition = reactive({x: 0.5, y: 0.5});
-
-const md = markdownit();
-
-function md2html(markdown) {
-    return md.render(markdown);
-}
 
 const problemSet = createDocumentResource({
     doctype: "SQL Problem Set",
@@ -74,7 +48,7 @@ const problemSet = createDocumentResource({
 
         createListResource({
             doctype: "SQL Problem Solution",
-            fields: "*",
+            fields: ["status", "name", "last_submitted_query"],
             filters: {
                 student: sessionUser()
             },
@@ -86,29 +60,4 @@ const problemSet = createDocumentResource({
 
     }
 })
-
-const submitSolution = createResource({
-    url: "ff_assignment_portal.api.submit_sql_solution",
-    onSuccess(d) {
-        if (d.status === "Correct") {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: {x: confettiPosition.x, y: confettiPosition.y}
-                });
-            }
-
-    }
-})
-
-function handleSolutionSubmit(e, problem) {
-    confettiPosition.x = e.x / window.innerWidth;
-    confettiPosition.y = e.y / window.innerHeight;
-
-    submitSolution.submit({
-        problem,
-        solution: solutions[problem]
-    })
-}
-
 </script>
