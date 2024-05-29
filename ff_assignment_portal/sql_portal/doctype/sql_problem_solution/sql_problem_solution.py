@@ -2,7 +2,6 @@
 # For license information, please see license.txt
 
 import frappe
-
 import sqlite3
 
 from frappe.model.document import Document
@@ -11,8 +10,6 @@ from frappe.model.document import Document
 class SQLProblemSolution(Document):
 	def before_save(self):
 		self.check_solution()
-		if not self.feedback:
-			self.status = "Correct"
 	
 	def check_solution(self):
 		self.feedback = None
@@ -77,3 +74,5 @@ class SQLProblemSolution(Document):
 				self.feedback = "Incorrect output"
 				self.status = "Incorrect"
 				return
+
+		self.status = "Correct"
