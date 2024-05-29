@@ -65,7 +65,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-05-29 12:47:19.480817",
+ "modified": "2024-05-29 12:50:33.288857",
  "modified_by": "Administrator",
  "module": "SQL Portal",
  "name": "SQL Problem Solution",
@@ -86,6 +86,19 @@
  ],
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": [],
+ "states": [
+  {
+   "color": "Green",
+   "title": "Correct"
+  },
+  {
+   "color": "Red",
+   "title": "Incorrect"
+  },
+  {
+   "color": "Orange",
+   "title": "Pending"
+  }
+ ],
  "track_changes": 1
 }
