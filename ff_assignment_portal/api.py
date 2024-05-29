@@ -69,6 +69,29 @@ def upload_assignment_submission():
 
 
 @frappe.whitelist()
+def get_solution_status(problem):
+	current_user = frappe.session.user
+	already_attempted = frappe.db.exists(
+		"SQL Problem Solution", {"problem": problem, "student": current_user}
+	)
+
+	summary = frappe._dict({"status": "Not Attempted"})
+
+	if already_attempted:
+		attempt_name = already_attempted
+		status, last_submitted_query, feedback = frappe.db.get_value(
+			"SQL Problem Solution",
+			attempt_name,
+			["status", "last_submitted_query", "feedback"],
+		)
+		summary.status = status
+		summary.last_submitted_query = last_submitted_query
+		summary.feedback = feedback
+
+	return summary
+
+
+@frappe.whitelist()
 def submit_sql_solution(problem, solution):
 	current_user = frappe.session.user
 	already_attempted = frappe.db.exists(
