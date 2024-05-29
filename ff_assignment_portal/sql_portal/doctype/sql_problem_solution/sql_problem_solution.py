@@ -16,28 +16,23 @@ class SQLProblemSolution(Document):
 
 		problem_name = self.problem
 		submitted_query = self.last_submitted_query
-		pset_name, correct_query, consider_order = frappe.db.get_value("SQL Problem", problem_name, ["problem_set", "correct_query", "consider_order"])
-
-		data_set_file = frappe.db.get_value("SQL Problem Set", pset_name, "data_set")
-		data_set_file = frappe.get_doc("File", {"file_url": data_set_file}).get_full_path()
-
-		con = sqlite3.connect(data_set_file)
+		correct_query, consider_order = frappe.db.get_value("SQL Problem", problem_name, ["correct_query", "consider_order"])
+		
+		db_path = self.get_data_set_path()
+		db_uri = f"file:{db_path}?mode=ro" # https://docs.python.org/3/library/sqlite3.html#how-to-work-with-sqlite-uris
+		con = sqlite3.connect(db_uri, uri=True)
 		cur = con.cursor()
 
 		cur.execute(correct_query)
-		correct_output = list(cur)
+		correct_output = cur.fetchall()
 
 		try:
 			cur.execute(submitted_query)
-			student_output = list(cur)
+			student_output = cur.fetchall()
 		except sqlite3.OperationalError as e:
 			self.feedback = f"Problem with your query: <br>{frappe.bold(e)}"
 			self.status = "Incorrect"
 			return
-
-
-		print(correct_output)
-		print(student_output)
 
 		num_rows_student = len(student_output)
 		num_rows_correct = len(correct_output)
@@ -76,3 +71,13 @@ class SQLProblemSolution(Document):
 				return
 
 		self.status = "Correct"
+	
+	def get_data_set_path(self):
+		problem_name = self.problem
+
+		pset_name = frappe.db.get_value("SQL Problem", problem_name, "problem_set")
+
+		data_set_url = frappe.db.get_value("SQL Problem Set", pset_name, "data_set")
+		data_set_path = frappe.get_doc("File", {"file_url": data_set_url}).get_full_path()
+
+		return data_set_path
