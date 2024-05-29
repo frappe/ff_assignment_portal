@@ -98,8 +98,10 @@ class SQLProblemSolution(Document):
 		if self.problem_data.consider_order:
 			for i in range(num_rows_correct):
 				for j in range(num_columns_correct):
-					if self.student_output[i][j] != self.correct_output[i][j]:
-						self.feedback = f"Incorrect Output on row {i+1}, column {j+1}."
+					student_cell_data = self.student_output[i][j]
+					correct_cell_data = self.correct_output[i][j]
+					if student_cell_data != correct_cell_data:
+						self.feedback = f"Incorrect Output on row {i+1}, column {j+1}. <br> Expected: {frappe.bold(correct_cell_data)}, Got: {frappe.bold(student_cell_data)}"
 						return False
 
 		else:
