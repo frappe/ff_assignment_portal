@@ -40,7 +40,7 @@ class SQLProblemSolution(Document):
 		self.problem_data = frappe.db.get_value(
 			"SQL Problem",
 			problem_name,
-			["correct_query", "consider_order"],
+			["correct_query", "consider_order", "problem_set"],
 			as_dict=True,
 		)
 
@@ -62,9 +62,7 @@ class SQLProblemSolution(Document):
 		return self.db_cursor
 
 	def get_data_set_path(self) -> str:
-		problem_name = self.problem
-
-		pset_name = frappe.db.get_value("SQL Problem", problem_name, "problem_set")
+		pset_name = self.problem_data.problem_set
 
 		data_set_url = frappe.db.get_value("SQL Problem Set", pset_name, "data_set")
 		data_set_path = frappe.get_doc(
