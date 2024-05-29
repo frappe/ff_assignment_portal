@@ -12,6 +12,7 @@ const routes = [
   {
     path: '/framework',
     component: () => import("@/pages/FrameworkPortal.vue"),
+    redirect: '/framework/day-1',
     children: [
       {
         path: 'day-1',
