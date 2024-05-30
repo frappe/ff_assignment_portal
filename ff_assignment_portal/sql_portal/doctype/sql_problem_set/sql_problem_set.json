@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "prompt",
+ "creation": "2024-05-28 10:42:27.369386",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "introduction",
+  "data_set",
+  "problems"
+ ],
+ "fields": [
+  {
+   "description": "An SQLite DB file",
+   "fieldname": "data_set",
+   "fieldtype": "Attach",
+   "in_list_view": 1,
+   "label": "Data Set",
+   "reqd": 1
+  },
+  {
+   "fieldname": "problems",
+   "fieldtype": "Table",
+   "label": "Problems",
+   "options": "SQL Set Problem"
+  },
+  {
+   "fieldname": "introduction",
+   "fieldtype": "Markdown Editor",
+   "label": "Introduction"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [
+  {
+   "link_doctype": "SQL Problem",
+   "link_fieldname": "problem_set"
+  }
+ ],
+ "modified": "2024-05-28 12:01:34.642060",
+ "modified_by": "Administrator",
+ "module": "SQL Portal",
+ "name": "SQL Problem Set",
+ "naming_rule": "Set by user",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

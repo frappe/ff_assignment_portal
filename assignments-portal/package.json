@@ -10,9 +10,11 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.0.18",
+    "canvas-confetti": "^1.9.3",
     "dayjs": "^1.11.10",
     "feather-icons": "^4.28.0",
     "frappe-ui": "^0.1.51",
+    "markdown-it": "^14.1.0",
     "vue": "^3.3.0",
     "vue-router": "^4.0.12"
   },

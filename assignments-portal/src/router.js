@@ -2,32 +2,45 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { session } from './data/session'
 import { userResource } from '@/data/user'
 
+
 const routes = [
   {
     path: '/',
     name: 'Home',
-    redirect: '/day-1',
+    redirect: '/framework/day-1',
   },
   {
-    path: '/day-1',
-    name: 'Day1',
-    component: () => import('@/pages/Day1.vue'),
+    path: '/framework',
+    component: () => import("@/pages/FrameworkPortal.vue"),
+    redirect: '/framework/day-1',
+    children: [
+      {
+        path: 'day-1',
+        name: 'Day1',
+        component: () => import('@/pages/Day1.vue'),
+      },
+      {
+        path: 'day-2',
+        name: 'Day2',
+        component: () => import('@/pages/Day2.vue'),
+      },
+      {
+        path: 'day-3',
+        name: 'Day3',
+        component: () => import('@/pages/Day3.vue'),
+      },
+      {
+        path: 'day-4',
+        name: 'Day4',
+        component: () => import('@/pages/Day4.vue'),
+      },
+    ]
   },
   {
-    path: '/day-2',
-    name: 'Day2',
-    component: () => import('@/pages/Day2.vue'),
-  },
-  {
-    path: '/day-3',
-    name: 'Day3',
-    component: () => import('@/pages/Day3.vue'),
-  },
-  {
-    path: '/day-4',
-    name: 'Day4',
-    component: () => import('@/pages/Day4.vue'),
-  },
+    path: '/sql/:psetName',
+    name: 'SQL Portal',
+    component: () => import("@/pages/SQLPortal.vue")
+  }
 ]
 
 let router = createRouter({
