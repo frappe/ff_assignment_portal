@@ -1,8 +1,11 @@
 <template>
   <div class="max-w-3xl mb-10">
+    <div>
+      <p></p>
+    </div>
     <Alert
-      >Note: This assignment will be <strong>graded manually</strong> and feedback will be given
-      during the evaluation call</Alert
+      >Note: This assignment will be only be <strong>graded manually for candidates who have opted for certification</strong> and feedback will be given
+      during the evaluation call. Please don't wait for this assignment's result and schedule your evaluation call from the batch dashboard page.</Alert
     >
   </div>
 
