@@ -33,6 +33,7 @@
             v-if="props.day == 4"
             @error="handleUploadError"
             @success="(file) => handleUploadSuccess('demo_video', file)"
+            :fileTypes="['video/*']"
             :upload-args="{
               upload_endpoint:
                 '/api/method/ff_assignment_portal.api.upload_assignment_submission',
@@ -43,6 +44,7 @@
                 >Attach Demo Video</Button
               >
               <p class="text-sm text-gray-500 mt-2 block" v-if="uploading">{{ progress }}% uploaded</p>
+              <p class="text-sm text-gray-500 mt-2 block" v-else>Only video files allowed.</p>
               <ErrorMessage class="mt-2" :message="error" />
             </template>
           </FileUploader>
