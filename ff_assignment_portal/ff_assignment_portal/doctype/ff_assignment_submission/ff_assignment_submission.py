@@ -61,36 +61,60 @@ class FFAssignmentSubmission(Document):
 		if self.day == "4":
 			return
 
+		similarity_score_algorithm = frappe.db.get_single_value(
+			"Assignment Portal Settings", "similarity_score_algorithm"
+		)
+
+		similarity_score_function = "_generate_similarity_score_hash_based"
+		if similarity_score_algorithm == "Cosine Similarity":
+			similarity_score_function = "_generate_similarity_score_cosine_based"
+
 		frappe.enqueue_doc(
 			ASSIGNMENT_DOCTYPE_NAME,
 			self.name,
-			"_generate_similarity_score_alt",
+			similarity_score_function,
 			queue="long",
 		)
 
 	@frappe.whitelist()
-	def _generate_similarity_score_alt(self):
+	def _generate_similarity_score(self):
+		similarity_score_algorithm = frappe.db.get_single_value(
+			"Assignment Portal Settings", "similarity_score_algorithm"
+		)
+
+		if similarity_score_algorithm == "Cosine Similarity":
+			self._generate_similarity_score_cosine_based()
+		else:
+			self._generate_similarity_score_hash_based()
+
+	def _generate_similarity_score_cosine_based(self):
 		submissions = frappe.db.get_all(
 			self.doctype,
 			filters={"day": self.day, "status": "Passed", "user": ("!=", self.user)},
+			pluck="name"
 		)
-		
+
 		max_similarity_score = 0
 		similar_assignment = None
-		current_user_file_contents = self.get_filename_with_contents() #{filename: filecontent}
+		current_user_file_contents = (
+			self.get_filename_with_contents()
+		)
 
 		for submission in submissions:
+			submission = frappe.get_doc(ASSIGNMENT_DOCTYPE_NAME, submission)
 			other_user_file_contents = submission.get_filename_with_contents()
-			similarity_score = compare_docs(other_user_file_contents, current_user_file_contents)
+			similarity_score = compare_docs(
+				other_user_file_contents, current_user_file_contents
+			)
 			if similarity_score > max_similarity_score:
 				max_similarity_score = similarity_score
 				similar_assignment = submission.name
+
 		self.similarity_score = max_similarity_score
 		self.similar_assignment = similar_assignment
 		self.save()
 
-	@frappe.whitelist()
-	def _generate_similarity_score(self):
+	def _generate_similarity_score_hash_based(self):
 		submissions = frappe.db.get_all(
 			self.doctype,
 			fields=["name", "hashes"],
@@ -697,17 +721,19 @@ def compare_hashes(other: dict, original: dict) -> float:
 
 	return score * 100
 
+
 def compare_docs(other: dict, original: dict) -> float:
 	"Compares file vectors and returns similarity score percent"
 	from sklearn.feature_extraction.text import TfidfVectorizer
 	from sklearn.metrics.pairwise import cosine_similarity
+
 	vectorizer = TfidfVectorizer()
 	score = 0
-	for filename, content in original.items():
-		other_content = other(filename,"")
+	for filename, content in original:
+		other_content = other(filename, "") # WHY?
 		documents = [content, other_content]
 		tfidf_matrix = vectorizer.fit_transform(documents)
-		similarity_matrix=cosine_similarity(tfidf_matrix)
+		similarity_matrix = cosine_similarity(tfidf_matrix)
 		similarity_score = similarity_matrix[0, 1]
 		score += similarity_score
 	average_score = score / len(original)
