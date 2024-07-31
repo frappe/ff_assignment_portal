@@ -22,6 +22,10 @@ const routes = [
     redirect: '/framework/day-3'
   },
   {
+    path: '/day-4',
+    redirect: '/framework/day-4'
+  },
+  {
     path: '/framework',
     component: () => import("@/pages/FrameworkPortal.vue"),
     redirect: '/framework/day-1',
