@@ -13,13 +13,29 @@
     day="4"
     :assignment-summary="props.assignmentSummary"
     :assignment-summary-resource="props.assignmentSummaryResource"
+    @submitted="showEvalDialog = true"
   />
+
+  <Dialog v-model="showEvalDialog" :options="{
+    title: 'Evaluation Time!',
+    message: 'Now that you have submitted your final assignment, it is time to schedule your evaluation call with us. Feedback for this assignment will be given during the same call. You can do that from the batch dashboard of your enrolled batch.',
+    actions: [
+      {
+        label: 'View Batches',
+        variant: 'solid',
+        link: 'https://frappe.school/lms/batches'
+      }
+    ]
+  }" />
 
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import AssignmentArea from '../components/AssignmentArea.vue'
-import { Alert } from 'frappe-ui'
+import { Alert, Dialog } from 'frappe-ui'
+
+const showEvalDialog = ref(true);
 
 const props = defineProps({
   assignmentSummary: {

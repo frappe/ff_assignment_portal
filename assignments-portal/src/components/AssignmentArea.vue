@@ -213,6 +213,8 @@ const props = defineProps({
   },
 })
 
+const emit = defineEmits(['submitted']);
+
 const statusColorMap = {
   Failed: 'red',
   Passed: 'green',
@@ -244,6 +246,7 @@ const submitAssignment = createResource({
     selectedDemoVideo.value = null
     assignmentSubmissions.reload()
     props.assignmentSummaryResource.reload()
+    emit('submitted');
   },
 })
 
