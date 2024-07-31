@@ -362,7 +362,12 @@ class FFAssignmentSubmission(Document):
 							frappe.throw(
 								f"There is a problem with your JSON file: {frappe.bold(file_name)}"
 							)
-					file_name = file_name.split("/")[-1]
+					parts = file_name.split("/")
+					file_name = parts[-1]
+
+					if len(parts) > 2:
+						frappe.throw(f"You have files inside a sub-directory ({parts[0]}/{parts[1]}), please place all the required files directly inside the zipped folder.")
+
 					yield file_name, file_json
 
 	def set_file_hashes(self):
