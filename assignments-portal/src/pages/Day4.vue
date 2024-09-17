@@ -35,7 +35,7 @@ import { ref } from 'vue'
 import AssignmentArea from '../components/AssignmentArea.vue'
 import { Alert, Dialog } from 'frappe-ui'
 
-const showEvalDialog = ref(true);
+const showEvalDialog = ref(false);
 
 const props = defineProps({
   assignmentSummary: {
