@@ -120,12 +120,14 @@ class FFAssignmentSubmission(Document):
 		self.submission_summary = summary
 
 	def notify_student(self):
-		if not frappe.conf.developer_mode:
-			frappe.sendmail(
-				recipients=self.user,
-				subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
-				message=self.feedback,
-			)
+		if frappe.conf.developer_mode or self.day == "4":
+			return	
+	
+		frappe.sendmail(
+			recipients=self.user,
+			subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
+			message=self.feedback,
+		)
 
 	def run_checks(self):
 		if self.day == "1":
