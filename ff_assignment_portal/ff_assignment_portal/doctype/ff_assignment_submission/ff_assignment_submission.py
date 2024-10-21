@@ -148,9 +148,7 @@ class FFAssignmentSubmission(Document):
 		# number of files must be 4
 		num_files = len(filename_with_contents)
 		if num_files != 4:
-			all_problems.append(
-				f"There must be exactly 4 files in the zip file, found {num_files}."
-			)
+			frappe.throw(f"There must be exactly 4 files in the zip file, found {num_files}.")
 
 		# name of the files must be correct
 		expected_filenames = [
