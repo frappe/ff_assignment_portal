@@ -360,7 +360,7 @@ class FFAssignmentSubmission(Document):
 							file_json = json.loads(file_json)
 						except json.decoder.JSONDecodeError:
 							frappe.throw(
-								f"There is a problem with your JSON file: {frappe.bold(file_name)}"
+								f"Unable to parse JSON file. There is a problem with your JSON file: {frappe.bold(file_name)}."
 							)
 					parts = file_name.split("/")
 					file_name = parts[-1]
