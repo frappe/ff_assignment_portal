@@ -424,6 +424,9 @@ class SubmissionDocTypeJSON:
 		self.validate_meta()
 
 	def validate_meta(self):
+		if not isinstance(self.doctype_meta, dict):
+			frappe.throw(f"Invalid DocType JSON: {frappe.bold(self.filename)}!")
+
 		if not self.doctype_meta.get("name"):
 			frappe.throw(f"Invalid DocType JSON: {frappe.bold(self.filename)}! Cannot find `name` key.")
 
