@@ -423,6 +423,13 @@ class SubmissionDocTypeJSON:
 		self.num_document_states = num_document_states
 		self.num_fetched_fields = num_fetched_fields
 
+		self.validate_meta()
+
+	def validate_meta(self):
+		if not self.doctype_meta.get("name"):
+			frappe.throw(f"Invalid DocType JSON: {frappe.bold(self.filename)}! Cannot find `name` key.")
+
+
 	def validate_num_fields(self, expected_num_fields):
 		try:
 			fields = self.doctype_meta["fields"]
