@@ -424,7 +424,10 @@ class SubmissionDocTypeJSON:
 		self.num_fetched_fields = num_fetched_fields
 
 	def validate_num_fields(self, expected_num_fields):
-		fields = self.doctype_meta["fields"]
+		try:
+			fields = self.doctype_meta["fields"]
+		except Exception:
+			frappe.throw(f"Cannot read `fields` list from DocType JSON: {frappe.bold(self.filename)}")
 
 		# ignore meta fields
 		meta_field_types = ("Column Break", "Section Break", "Tab Break")
