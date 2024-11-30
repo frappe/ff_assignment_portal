@@ -13,7 +13,7 @@
     day="4"
     :assignment-summary="props.assignmentSummary"
     :assignment-summary-resource="props.assignmentSummaryResource"
-    @submitted="showEvalDialog = true"
+    @submitted="displayEvaluationDialog"
   />
 
   <Dialog v-model="showEvalDialog" :options="{
@@ -47,4 +47,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+function displayEvaluationDialog() {
+  setTimeout(() => showEvalDialog.value = true, 900);
+}
 </script>
