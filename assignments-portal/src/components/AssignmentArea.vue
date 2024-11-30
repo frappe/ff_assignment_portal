@@ -14,10 +14,7 @@
           <FileUploader
             @error="handleUploadError"
             @success="(file) => handleUploadSuccess('assignment', file)"
-            :upload-args="{
-              upload_endpoint:
-                '/api/method/ff_assignment_portal.api.upload_assignment_submission',
-            }"
+            :fileTypes="['application/zip']"
           >
             <template v-slot="{ uploading, openFileSelector, error, progress }">
               <Button @click="openFileSelector" :loading="uploading"
@@ -34,10 +31,6 @@
             @error="handleUploadError"
             @success="(file) => handleUploadSuccess('demo_video', file)"
             :fileTypes="['video/*']"
-            :upload-args="{
-              upload_endpoint:
-                '/api/method/ff_assignment_portal.api.upload_assignment_submission',
-            }"
           >
             <template v-slot="{ uploading, openFileSelector, error, progress }">
               <Button @click="openFileSelector" :loading="uploading"
