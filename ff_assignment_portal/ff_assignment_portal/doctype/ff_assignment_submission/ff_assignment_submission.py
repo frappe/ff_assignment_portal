@@ -209,6 +209,7 @@ class FFAssignmentSubmission(Document):
 			"airplane_flight.py",
 			"*web_form.json",
 			"*notification.json",
+			"populate_seats.py"
 		]
 
 		self.check_required_files(required_files_in_zip, problems)
