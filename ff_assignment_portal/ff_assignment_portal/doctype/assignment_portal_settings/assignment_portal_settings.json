@@ -1,0 +1,58 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-12-26 17:10:26.058763",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "code_server_section",
+  "code_server_url",
+  "column_break_ebid",
+  "code_server_password"
+ ],
+ "fields": [
+  {
+   "fieldname": "code_server_section",
+   "fieldtype": "Section Break",
+   "label": "Code Server"
+  },
+  {
+   "default": "code.frappe.school",
+   "fieldname": "code_server_url",
+   "fieldtype": "Data",
+   "label": "Code Server URL"
+  },
+  {
+   "fieldname": "column_break_ebid",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "code_server_password",
+   "fieldtype": "Password",
+   "label": "Code Server Password"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-12-26 17:12:03.365747",
+ "modified_by": "Administrator",
+ "module": "FF Assignment Portal",
+ "name": "Assignment Portal Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
