@@ -117,7 +117,6 @@
   },
   {
    "default": "0",
-   "depends_on": "eval:doc.day===\"4\"",
    "fieldname": "cloned_to_code_server",
    "fieldtype": "Check",
    "label": "Cloned to Code Server",
