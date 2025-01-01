@@ -56,7 +56,9 @@ class FFAssignmentSubmission(Document):
         hashes: DF.Code | None
         similar_assignment: DF.Link | None
         similarity_score: DF.Percent
-        status: DF.Literal["Unchecked", "Check In Progress", "Stale", "Passed", "Failed"]
+        status: DF.Literal[
+            "Unchecked", "Check In Progress", "Stale", "Passed", "Failed"
+        ]
         submission: DF.Attach
         submission_summary: DF.SmallText | None
         user: DF.Link
@@ -423,6 +425,11 @@ class FFAssignmentSubmission(Document):
         self._clone_to_code_server()
 
     def _clone_to_code_server(self):
+        ssh_private_key = frappe.conf.ssh_private_key
+
+        if not ssh_private_key:
+            frappe.throw("SSH Private Key is not configured.")
+
         import io
         import paramiko
 
@@ -435,7 +442,7 @@ class FFAssignmentSubmission(Document):
 
         username = "root"
         code_server_host = settings.code_server_host
-        private_key_string = frappe.conf.ssh_private_key.replace("\\n", "\n")
+        private_key_string = ssh_private_key.replace("\\n", "\n")
 
         private_key = paramiko.RSAKey.from_private_key(io.StringIO(private_key_string))
 
@@ -447,14 +454,16 @@ class FFAssignmentSubmission(Document):
         sftp.put(assignment_file_path, f"/home/school/ff-assignments/{self.name}.zip")
 
         # run the script to extract the zip file
-        stdin, stdout, stderr = ssh.exec_command(f"cd /home/school/ff-assignments && unzip {self.name}.zip -d {self.name}")
+        stdin, stdout, stderr = ssh.exec_command(
+            f"cd /home/school/ff-assignments && unzip {self.name}.zip -d {self.name}"
+        )
 
-		# check if the command was successful
+        # check if the command was successful
         error = stderr.read()
         if error:
             frappe.throw(f"stderr: {error}")
-            
-		# delete the zip file
+
+        # delete the zip file
         sftp.remove(f"/home/school/ff-assignments/{self.name}.zip")
 
         self.cloned_to_code_server = 1
