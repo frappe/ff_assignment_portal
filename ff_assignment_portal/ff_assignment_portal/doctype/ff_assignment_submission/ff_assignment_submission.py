@@ -430,25 +430,14 @@ class FFAssignmentSubmission(Document):
         if not ssh_private_key:
             frappe.throw("SSH Private Key is not configured.")
 
-        import io
-        import paramiko
+        from ff_assignment_portal.utils import get_ssh_client
+
+        ssh = get_ssh_client(ssh_private_key)
 
         # scp the zip file to code server
         assignment_file = self.submission
         assignment_file_doc = frappe.get_doc("File", {"file_url": assignment_file})
         assignment_file_path = assignment_file_doc.get_full_path()
-
-        settings = frappe.get_cached_doc("Assignment Portal Settings")
-
-        username = "root"
-        code_server_host = settings.code_server_host
-        private_key_string = ssh_private_key.replace("\\n", "\n")
-
-        private_key = paramiko.RSAKey.from_private_key(io.StringIO(private_key_string))
-
-        ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(code_server_host, username=username, pkey=private_key)
 
         sftp = ssh.open_sftp()
         sftp.put(assignment_file_path, f"/home/school/ff-assignments/{self.name}.zip")
