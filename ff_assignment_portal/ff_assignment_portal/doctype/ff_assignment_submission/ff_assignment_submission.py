@@ -466,7 +466,7 @@ class FFAssignmentSubmission(Document):
             frappe.throw(f"stderr: {error}")
 
         # delete the zip file
-        sftp.remove(f"/home/school/ff-assignments/{self.name}.zip")
+        sftp.remove(f"{base_dir}/{self.name}.zip")
 
         self.cloned_to_code_server = 1
         self.save()
