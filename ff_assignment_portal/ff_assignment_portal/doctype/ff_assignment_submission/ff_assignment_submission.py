@@ -439,12 +439,14 @@ class FFAssignmentSubmission(Document):
         assignment_file_doc = frappe.get_doc("File", {"file_url": assignment_file})
         assignment_file_path = assignment_file_doc.get_full_path()
 
+        base_dir = "/home/school/ff-assignments"
+
         sftp = ssh.open_sftp()
-        sftp.put(assignment_file_path, f"/home/school/ff-assignments/{self.name}.zip")
+        sftp.put(assignment_file_path, f"{base_dir}/{self.name}.zip")
 
         # run the script to extract the zip file
         stdin, stdout, stderr = ssh.exec_command(
-            f"cd /home/school/ff-assignments && unzip {self.name}.zip -d {self.name}"
+            f"cd {base_dir} && unzip {self.name}.zip -d {self.name}"
         )
 
         # check if the command was successful
