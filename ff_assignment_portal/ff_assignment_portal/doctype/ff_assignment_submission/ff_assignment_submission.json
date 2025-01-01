@@ -121,12 +121,13 @@
    "fieldname": "cloned_to_code_server",
    "fieldtype": "Check",
    "label": "Cloned to Code Server",
+   "no_copy": 1,
    "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-12-26 17:07:31.458083",
+ "modified": "2025-01-01 18:13:01.354538",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "FF Assignment Submission",

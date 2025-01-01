@@ -10,10 +10,17 @@ frappe.ui.form.on("FF Assignment Submission", {
             })
         })
 
-        if (frm.doc.day === "4") {
-            frm.add_custom_button("Clone to Code Server", () => {
-                frm.call("clone_to_code_server")
+        if (!frm.doc.cloned_to_code_server) {
+            const button = frm.add_custom_button("Clone to Code Server", () => {
+                frm.call({ method: "clone_to_code_server", button, freeze: true, doc: frm.doc }).then(() => {
+                    frappe.show_alert({message: "Successfully cloned!", indicator: "green"})
+                    frm.refresh();
+                })
             })
+        }
+
+        if (frm.doc.cloned_to_code_server) {
+            frm.add_web_link(`https://code.frappe.school/?folder=/home/school/ff-assignments/${frm.doc.name}`, "View in Code Server")
         }
 	},
 });

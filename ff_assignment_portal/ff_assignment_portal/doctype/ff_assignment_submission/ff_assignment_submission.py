@@ -56,9 +56,7 @@ class FFAssignmentSubmission(Document):
         hashes: DF.Code | None
         similar_assignment: DF.Link | None
         similarity_score: DF.Percent
-        status: DF.Literal[
-            "Unchecked", "Check In Progress", "Stale", "Passed", "Failed"  # noqa: F821, F722
-        ]
+        status: DF.Literal["Unchecked", "Check In Progress", "Stale", "Passed", "Failed"]
         submission: DF.Attach
         submission_summary: DF.SmallText | None
         user: DF.Link
@@ -419,8 +417,8 @@ class FFAssignmentSubmission(Document):
 
     @frappe.whitelist()
     def clone_to_code_server(self):
-        # if self.cloned_to_code_server:
-        #     frappe.throw("Already cloned to code server.")
+        if self.cloned_to_code_server:
+            frappe.throw("Already cloned to code server.")
 
         self._clone_to_code_server()
 
