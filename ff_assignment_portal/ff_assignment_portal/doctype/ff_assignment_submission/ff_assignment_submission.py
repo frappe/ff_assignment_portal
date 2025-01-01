@@ -428,7 +428,7 @@ class FFAssignmentSubmission(Document):
         ssh_private_key = frappe.conf.ssh_private_key
 
         if not ssh_private_key:
-            frappe.throw("SSH Private Key is not configured.")
+            frappe.throw("SSH Private Key not set in site config!")
 
         from ff_assignment_portal.utils import get_ssh_client
 
