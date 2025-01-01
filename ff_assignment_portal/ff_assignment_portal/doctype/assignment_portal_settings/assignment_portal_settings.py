@@ -16,6 +16,7 @@ class AssignmentPortalSettings(Document):
 
 		code_server_host: DF.Data | None
 		code_server_password: DF.Password | None
+		private_key_type: DF.Literal["ed25519", "RSA"]
 	# end: auto-generated types
 
 	pass

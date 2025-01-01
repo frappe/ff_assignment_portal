@@ -7,6 +7,7 @@
  "field_order": [
   "code_server_section",
   "code_server_host",
+  "private_key_type",
   "column_break_ebid",
   "code_server_password"
  ],
@@ -30,12 +31,19 @@
    "fieldname": "code_server_host",
    "fieldtype": "Data",
    "label": "Code Server Host"
+  },
+  {
+   "default": "ed25519",
+   "fieldname": "private_key_type",
+   "fieldtype": "Select",
+   "label": "Private Key Type",
+   "options": "ed25519\nRSA"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-01 17:31:34.735308",
+ "modified": "2025-01-01 18:50:45.073863",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "Assignment Portal Settings",
