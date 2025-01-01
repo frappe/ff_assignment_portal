@@ -37,13 +37,13 @@
    "fieldname": "private_key_type",
    "fieldtype": "Select",
    "label": "Private Key Type",
-   "options": "ed25519\nRSA"
+   "options": "ed25519\nrsa"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-01-01 18:50:45.073863",
+ "modified": "2025-01-01 18:53:59.381242",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "Assignment Portal Settings",
