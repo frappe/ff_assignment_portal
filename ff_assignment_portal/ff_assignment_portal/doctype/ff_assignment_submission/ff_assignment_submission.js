@@ -9,5 +9,11 @@ frappe.ui.form.on("FF Assignment Submission", {
                 frm.refresh();
             })
         })
+
+        if (frm.doc.day === "4") {
+            frm.add_custom_button("Clone to Code Server", () => {
+                frm.call("clone_to_code_server")
+            })
+        }
 	},
 });

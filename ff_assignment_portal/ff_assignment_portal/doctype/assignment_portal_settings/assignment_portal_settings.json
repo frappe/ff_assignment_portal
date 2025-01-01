@@ -6,7 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "code_server_section",
-  "code_server_url",
+  "code_server_host",
   "column_break_ebid",
   "code_server_password"
  ],
@@ -17,12 +17,6 @@
    "label": "Code Server"
   },
   {
-   "default": "code.frappe.school",
-   "fieldname": "code_server_url",
-   "fieldtype": "Data",
-   "label": "Code Server URL"
-  },
-  {
    "fieldname": "column_break_ebid",
    "fieldtype": "Column Break"
   },
@@ -30,12 +24,18 @@
    "fieldname": "code_server_password",
    "fieldtype": "Password",
    "label": "Code Server Password"
+  },
+  {
+   "default": "code.frappe.school",
+   "fieldname": "code_server_host",
+   "fieldtype": "Data",
+   "label": "Code Server Host"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-12-26 17:12:03.365747",
+ "modified": "2025-01-01 17:31:34.735308",
  "modified_by": "Administrator",
  "module": "FF Assignment Portal",
  "name": "Assignment Portal Settings",

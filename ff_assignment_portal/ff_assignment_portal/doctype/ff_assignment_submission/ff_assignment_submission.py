@@ -389,6 +389,52 @@ class FFAssignmentSubmission(Document):
 
 		self.hashes = frappe.as_json(hashes, indent=2)
 
+    @frappe.whitelist()
+    def clone_to_code_server(self):
+        # if self.cloned_to_code_server:
+        #     frappe.throw("Already cloned to code server.")
+
+        self._clone_to_code_server()
+
+    def _clone_to_code_server(self):
+        import io
+        import paramiko
+
+        # scp the zip file to code server
+        assignment_file = self.submission
+        assignment_file_doc = frappe.get_doc("File", {"file_url": assignment_file})
+        assignment_file_path = assignment_file_doc.get_full_path()
+
+        settings = frappe.get_cached_doc("Assignment Portal Settings")
+
+        username = "root"
+        code_server_host = settings.code_server_host
+        private_key_string = frappe.conf.ssh_private_key.replace("\\n", "\n")
+
+        private_key = paramiko.RSAKey.from_private_key(io.StringIO(private_key_string))
+
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(code_server_host, username=username, pkey=private_key)
+
+        sftp = ssh.open_sftp()
+        sftp.put(assignment_file_path, f"/home/school/ff-assignments/{self.name}.zip")
+
+        # run the script to extract the zip file
+        stdin, stdout, stderr = ssh.exec_command(f"cd /home/school/ff-assignments && unzip {self.name}.zip -d {self.name}")
+
+		# check if the command was successful
+        error = stderr.read()
+        if error:
+            frappe.throw(f"stderr: {error}")
+            
+		# delete the zip file
+        sftp.remove(f"/home/school/ff-assignments/{self.name}.zip")
+
+        self.cloned_to_code_server = 1
+        self.save()
+        ssh.close()
+
 
 class SubmissionDocTypeJSON:
 	def __init__(

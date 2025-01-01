@@ -14,8 +14,8 @@ class AssignmentPortalSettings(Document):
 	if TYPE_CHECKING:
 		from frappe.types import DF
 
+		code_server_host: DF.Data | None
 		code_server_password: DF.Password | None
-		code_server_url: DF.Data | None
 	# end: auto-generated types
 
 	pass
