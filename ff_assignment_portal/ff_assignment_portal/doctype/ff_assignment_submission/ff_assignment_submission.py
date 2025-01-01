@@ -80,6 +80,7 @@ class FFAssignmentSubmission(Document):
 
     def after_insert(self):
         self.enqueue_generate_similarity_score()
+        self.enqueue_clone_to_code_server()
 
     def enqueue_generate_similarity_score(self):
         if self.day == "4":
@@ -423,6 +424,16 @@ class FFAssignmentSubmission(Document):
             frappe.throw("Already cloned to code server.")
 
         self._clone_to_code_server()
+
+    def enqueue_clone_to_code_server(self):
+        # automatically clone final assignments
+        if self.day == "4":
+            frappe.enqueue_doc(
+                ASSIGNMENT_DOCTYPE_NAME,
+                self.name,
+                "_clone_to_code_server",
+                enqueue_after_commit=True,
+            )
 
     def _clone_to_code_server(self):
         ssh_private_key = frappe.conf.ssh_private_key
