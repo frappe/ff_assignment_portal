@@ -147,12 +147,16 @@ class FFAssignmentSubmission(Document):
     def notify_student(self):
         if frappe.conf.developer_mode or self.day == "4":
             return
+        
 
-        frappe.sendmail(
-            recipients=self.user,
-            subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
-            message=self.feedback,
-        )
+        try:
+            frappe.sendmail(
+                recipients=self.user,
+                subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
+                message=self.feedback,
+            )
+        except Exception:
+            frappe.log_error("Error sending notification to student", "Email sending failed", self.doctype, self.name)
 
     def run_checks(self):
         if self.day == "1":
