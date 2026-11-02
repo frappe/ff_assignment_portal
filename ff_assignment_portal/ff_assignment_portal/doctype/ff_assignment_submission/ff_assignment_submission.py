@@ -147,7 +147,11 @@ class FFAssignmentSubmission(Document):
     def notify_student(self):
         if frappe.conf.developer_mode or self.day == "4":
             return
-        
+
+        # A submission waiting for a manual check has no feedback yet. Without this the
+        # student got an email that only said "None"; they hear back once it is reviewed.
+        if not frappe.utils.strip_html(self.feedback or "").strip():
+            return
 
         try:
             frappe.sendmail(
