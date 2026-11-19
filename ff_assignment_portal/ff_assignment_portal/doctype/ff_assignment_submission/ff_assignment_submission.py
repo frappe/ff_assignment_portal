@@ -155,7 +155,7 @@ class FFAssignmentSubmission(Document):
 
         try:
             frappe.sendmail(
-                recipients=self.user,
+                recipients=frappe.utils.get_email_address(self.user),
                 subject=f"[Frappe School] There is an update on your submission for Day {self.day}",
                 message=self.feedback,
             )
